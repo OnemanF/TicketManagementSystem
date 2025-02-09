@@ -1,0 +1,12 @@
+Label{
+    -fx-text-fill: White;
+}
+
+Button{
+    -fx-background-color: #6E6E6E;
+    -fx-text-fill: white;
+}
+
+AnchorPane{
+    -fx-background-color: #624DE3;
+}

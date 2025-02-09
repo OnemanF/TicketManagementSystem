@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="545.0" prefWidth="726.0" stylesheets="/dk/easv/ticketmanagementsystem/EventCoordinator.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventCoordinatorController">
+    <children>
+        <Label layoutX="132.0" layoutY="26.0" text="Event Coordinator Dashboard">
+            <font>
+                <Font size="40.0" />
+            </font>
+        </Label>
+        <Button fx:id="btnViewEvents" layoutX="36.0" layoutY="143.0" text="View My Events" />
+        <Button fx:id="btnCreateEvent" layoutX="33.0" layoutY="182.0" text="Create Event" />
+        <Button fx:id="btnAssignCoordinators" layoutX="33.0" layoutY="220.0" text="Assign Coordinators to My Events" />
+        <Button fx:id="btnLogout" layoutX="32.0" layoutY="256.0" text="Logout" />
+        <TableView fx:id="tblTickets" layoutX="238.0" layoutY="135.0" prefHeight="294.0" prefWidth="458.0">
+            <columns>
+                <TableColumn prefWidth="108.8" text="Ticket ID" />
+                <TableColumn prefWidth="175.99" text="Customer Name" />
+                <TableColumn prefWidth="172.79996337890623" text="Ticket Type" />
+            </columns>
+        </TableView>
+        <Button fx:id="btnAddTicket" layoutX="32.0" layoutY="292.0" text="Add Ticket" />
+        <Button fx:id="btnDeleteTicket" layoutX="604.0" layoutY="455.0" text="Delete Ticket" />
+    </children>
+</AnchorPane>

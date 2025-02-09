@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                dk.easv.mytunes.ticketmanagementsystem/dk.easv.mytunes.ticketmanagementsystem.Gui.Main
+                                dk.easv.mytunes.ticketmanagementsystem/dk.easv.ticketmanagementsystem.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

@@ -1,0 +1,23 @@
+#btnManageUsers{
+    -fx-background-color: #6E6E6E;
+    -fx-text-fill: white;
+}
+
+#btnAssignCoordinators{
+    -fx-background-color: #6E6E6E;
+    -fx-text-fill: white;
+}
+
+#btnLogout{
+    -fx-background-color: #6E6E6E;
+    -fx-text-fill: white;
+}
+
+AnchorPane{
+    -fx-background-color: #624DE3;
+}
+
+Label{
+    -fx-text-fill: White;
+}
+
