@@ -11,15 +11,15 @@
     <children>
         <TableView fx:id="tblUsers" layoutX="18.0" layoutY="58.0" prefHeight="306.0" prefWidth="564.0">
             <columns>
-                <TableColumn prefWidth="200.0" text="Username" />
-                <TableColumn prefWidth="150.0" text="Role" />
-                <TableColumn prefWidth="210.39996337890625" text="Assigned Events" />
+                <TableColumn fx:id="colUsername" prefWidth="200.0" text="Username" />
+                <TableColumn fx:id="colRole" prefWidth="150.0" text="Role" />
+                <TableColumn fx:id="colAssignedEvents" prefWidth="210.39996337890625" text="Assigned Events" />
             </columns>
         </TableView>
-        <Button fx:id="btnAddUser" layoutX="45.0" layoutY="374.0" text="Add User" />
-        <Button fx:id="btnEditUser" layoutX="136.0" layoutY="374.0" text="Edit User" />
-        <Button fx:id="btnDeleteUser" layoutX="222.0" layoutY="374.0" text="Delete User" />
-        <Button fx:id="btnAssignEventToCoordinator" layoutX="327.0" layoutY="373.0" text="Assign Event to Coordinator" />
+        <Button fx:id="btnAddUser" layoutX="45.0" layoutY="374.0" onAction="#handleAddUser" text="Add User" />
+        <Button fx:id="btnEditUser" layoutX="136.0" layoutY="374.0" onAction="#handleEditUser" text="Edit User" />
+        <Button fx:id="btnDeleteUser" layoutX="222.0" layoutY="374.0" onAction="#handleDeleteUser" text="Delete User" />
+        <Button fx:id="btnAssignEventToCoordinator" layoutX="327.0" layoutY="373.0" onAction="#handleAssignEvent" text="Assign Event to Coordinator" />
         <Label layoutX="145.0" text="User Management">
             <font>
                 <Font size="40.0" />

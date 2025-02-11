@@ -14,18 +14,18 @@
                 <Font size="40.0" />
             </font>
         </Label>
-        <Button fx:id="btnViewEvents" layoutX="36.0" layoutY="143.0" text="View My Events" />
-        <Button fx:id="btnCreateEvent" layoutX="33.0" layoutY="182.0" text="Create Event" />
-        <Button fx:id="btnAssignCoordinators" layoutX="33.0" layoutY="220.0" text="Assign Coordinators to My Events" />
-        <Button fx:id="btnLogout" layoutX="32.0" layoutY="256.0" text="Logout" />
+        <Button fx:id="btnViewEvents" layoutX="36.0" layoutY="143.0" onAction="#handleViewEvents" text="View My Events" />
+        <Button fx:id="btnCreateEvent" layoutX="33.0" layoutY="182.0" onAction="#handleCreateEvent" text="Create Event" />
+        <Button fx:id="btnAssignCoordinators" layoutX="33.0" layoutY="220.0" onAction="#handleAssignCoordinators" text="Assign Coordinators to My Events" />
+        <Button fx:id="btnLogout" layoutX="32.0" layoutY="256.0" onAction="#handleLogout" text="Logout" />
         <TableView fx:id="tblTickets" layoutX="238.0" layoutY="135.0" prefHeight="294.0" prefWidth="458.0">
             <columns>
-                <TableColumn prefWidth="108.8" text="Ticket ID" />
-                <TableColumn prefWidth="175.99" text="Customer Name" />
-                <TableColumn prefWidth="172.79996337890623" text="Ticket Type" />
+                <TableColumn fx:id="colTicketID" prefWidth="108.8" text="Ticket ID" />
+                <TableColumn fx:id="colCustomerName" prefWidth="175.99" text="Customer Name" />
+                <TableColumn fx:id="colTicketType" prefWidth="172.79996337890623" text="Ticket Type" />
             </columns>
         </TableView>
-        <Button fx:id="btnAddTicket" layoutX="32.0" layoutY="292.0" text="Add Ticket" />
-        <Button fx:id="btnDeleteTicket" layoutX="604.0" layoutY="455.0" text="Delete Ticket" />
+        <Button fx:id="btnAddTicket" layoutX="32.0" layoutY="292.0" onAction="#handleAddTicket" text="Add Ticket" />
+        <Button fx:id="btnDeleteTicket" layoutX="604.0" layoutY="455.0" onAction="#handleDeleteTicket" text="Delete Ticket" />
     </children>
 </AnchorPane>

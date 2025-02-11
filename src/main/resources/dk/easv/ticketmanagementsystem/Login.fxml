@@ -12,6 +12,6 @@
         <TextField fx:id="txtUsername" layoutX="150.0" layoutY="30.0" prefWidth="200.0" />
         <Label layoutX="50.0" layoutY="80.0" text="Password:" />
         <PasswordField fx:id="txtPassword" layoutX="150.0" layoutY="80.0" prefWidth="200.0" />
-        <Button fx:id="btnLogin" layoutX="150.0" layoutY="130.0" text="Login" />
+        <Button fx:id="btnLogin" layoutX="150.0" layoutY="130.0" onAction="#handleLogin" text="Login" />
     </children>
 </AnchorPane>

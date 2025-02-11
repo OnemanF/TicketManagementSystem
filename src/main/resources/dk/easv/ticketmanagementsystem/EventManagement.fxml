@@ -11,16 +11,16 @@
     <children>
         <TableView fx:id="tblEvents" layoutY="62.0" prefHeight="307.0" prefWidth="642.0">
             <columns>
-                <TableColumn prefWidth="150.0" text="Event Name" />
-                <TableColumn prefWidth="120.0" text="Date" />
-                <TableColumn prefWidth="120.0" text="Time" />
-                <TableColumn prefWidth="253.60006713867188" text="Location" />
+                <TableColumn fx:id="colEventName" prefWidth="150.0" text="Event Name" />
+                <TableColumn fx:id="colDate" prefWidth="120.0" text="Date" />
+                <TableColumn fx:id="colStartTime" prefWidth="120.0" text="Time" />
+                <TableColumn fx:id="colLocation" prefWidth="253.60006713867188" text="Location" />
                 <TableColumn prefWidth="207.199951171875" text="Notes" />
             </columns>
         </TableView>
-        <Button fx:id="btnAddEvent" layoutX="49.0" layoutY="387.0" text="Add Event" />
-        <Button fx:id="btnEditEvent" layoutX="148.0" layoutY="387.0" text="Edit Event" />
-        <Button fx:id="btnDeleteEvent" layoutX="250.0" layoutY="387.0" text="Delete Event" />
+        <Button fx:id="btnAddEvent" layoutX="49.0" layoutY="387.0" onAction="#handleAddEvent" text="Add Event" />
+        <Button fx:id="btnEditEvent" layoutX="148.0" layoutY="387.0" onAction="#handleEditEvent" text="Edit Event" />
+        <Button fx:id="btnDeleteEvent" layoutX="250.0" layoutY="387.0" onAction="#handleDeleteEvent" text="Delete Event" />
         <Label layoutX="161.0" layoutY="3.0" text="Event Management">
             <font>
                 <Font size="40.0" />
