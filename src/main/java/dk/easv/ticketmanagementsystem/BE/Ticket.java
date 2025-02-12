@@ -4,10 +4,10 @@ public class Ticket {
     private int id;
     private String customerName;
     private String ticketType;
-    private int eventId;
+    private Event event;
 
-    public Ticket(int eventId, String ticketType, int id, String customerName) {
-        this.eventId = eventId;
+    public Ticket(Event event, String ticketType, int id, String customerName) {
+        this.event = event;
         this.ticketType = ticketType;
         this.id = id;
         this.customerName = customerName;
@@ -37,13 +37,11 @@ public class Ticket {
         this.customerName = customerName;
     }
 
-    public int getEventId() {
-        return eventId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
+    public void setEvent(Event event) {
+        this.event = event;
     }
-
-
 }

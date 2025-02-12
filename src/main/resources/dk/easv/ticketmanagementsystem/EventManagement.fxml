@@ -26,5 +26,6 @@
                 <Font size="40.0" />
             </font>
         </Label>
+      <Button fx:id="btnAssignCoordinatorToMyEvent" layoutX="360.0" layoutY="387.0" onAction="#handleAssignCoordinatorToMyEvent" text="Assign Coordinator to my Event" />
     </children>
 </AnchorPane>

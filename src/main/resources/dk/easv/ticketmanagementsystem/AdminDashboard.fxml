@@ -15,11 +15,7 @@
             <font>
                 <Font size="20.0" />
             </font></Button>
-        <Button fx:id="btnAssignCoordinators" layoutX="203.0" layoutY="196.0" onAction="#handleAssignCoordinators" text="Assign Coordinators to Events">
-            <font>
-                <Font size="20.0" />
-            </font></Button>
-        <Button fx:id="btnLogout" layoutX="203.0" layoutY="258.0" onAction="#handleLogout" text="Logout">
+        <Button fx:id="btnLogout" layoutX="203.0" layoutY="206.0" onAction="#handleLogout" text="Logout">
             <font>
                 <Font size="20.0" />
             </font></Button>

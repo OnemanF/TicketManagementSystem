@@ -2,54 +2,56 @@ package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
+import javafx.event.ActionEvent;
 import java.io.IOException;
 
 public class AdminDashboardController {
     @FXML
     private Button btnManageUsers;
     @FXML
-    private Button btnAssignCoordinators;
-    @FXML
     private Button btnLogout;
 
     @FXML
     private void handleManageUsers(ActionEvent event) {
-        loadScene("UserManagement.fxml", "User Management");
-    }
-
-    @FXML
-    private void handleAssignCoordinators(ActionEvent event) {
-        showAlert("Assign Coordinators clicked.");
+        try {
+            loadScene(event, "UserManagement.fxml");
+        } catch (IOException e) {
+            showAlert("Error loading User Management screen.");
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void handleLogout(ActionEvent event) {
-        showAlert("Logging out...");
-        loadScene("Login.fxml", "Login");
-    }
-
-    private void loadScene(String fxmlFile, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Stage stage = (Stage) btnManageUsers.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle(title);
-            stage.show();
+            loadScene(event, "Login.fxml");
         } catch (IOException e) {
-            showAlert("Failed to load: " + title);
+            showAlert("Error returning to Login.");
+            e.printStackTrace();
         }
     }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.show();
+    private void loadScene(ActionEvent event, String fxml) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/ticketmanagementsystem/" + fxml));
+        Parent root = loader.load();
+
+        // Getting current stage from the button
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
