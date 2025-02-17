@@ -4,6 +4,7 @@ import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
 import dk.easv.ticketmanagementsystem.BE.UserManager;
+import dk.easv.ticketmanagementsystem.Gui.Model.EventModel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,7 +46,11 @@ public class EventManagementController {
     @FXML
     private Button btnAddEvent, btnEditEvent, btnDeleteEvent, btnAssignCoordinatorToMyEvent;
 
-    private final ObservableList<Event> events = FXCollections.observableArrayList();
+    private EventModel eventModel;
+
+    public EventManagementController(){
+        this.eventModel = new EventModel();
+    }
 
     @FXML
     public void initialize() {
@@ -55,7 +60,7 @@ public class EventManagementController {
         colStartTime.setCellValueFactory(new PropertyValueFactory<>("time"));
         colNotes.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
-        tblEvents.setItems(events);
+        tblEvents.setItems(eventModel.getEvents());
 
         tblEvents.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -69,10 +74,7 @@ public class EventManagementController {
     @FXML
     private void handleAddEvent(ActionEvent event) {
         Optional<Event> result = showAddEventDialog();
-        result.ifPresent(newEvent -> {
-            EventManager.getInstance().addEvent(newEvent);
-            events.add(newEvent);
-        });
+        result.ifPresent(eventModel::addEvent);
     }
 
     private Optional<Event> showAddEventDialog() {
@@ -112,6 +114,12 @@ public class EventManagementController {
                 String eventName = eventNameField.getText();
                 String location = locationField.getText();
                 String notes = notesField.getText();
+
+                if (eventName.isEmpty() || location.isEmpty() || notes.isEmpty() || datePicker.getValue() == null) {
+                    showAlert("All fields must be filled!");
+                    return null;
+                }
+
                 LocalTime time;
                 try {
                     time = LocalTime.parse(timeField.getText());
@@ -119,11 +127,12 @@ public class EventManagementController {
                     showAlert("Invalid time format! Use HH:mm");
                     return null;
                 }
+
                 LocalDateTime startTime = LocalDateTime.of(datePicker.getValue(), time);
 
+                int newEventId = eventModel.getEvents().size() + 1;
 
-                Event newEvent = new Event(events.size() + 1, eventName, startTime, location, notes);
-                return newEvent;
+                return new Event(newEventId, eventName, startTime, location, notes);
             }
             return null;
         });
@@ -201,7 +210,7 @@ public class EventManagementController {
     private void handleDeleteEvent(ActionEvent event) {
         Event selectedEvent = tblEvents.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            events.remove(selectedEvent);
+            eventModel.deleteEvent(selectedEvent);
         }
     }
 
@@ -217,7 +226,7 @@ public class EventManagementController {
         Optional<User> result = showAssignCoordinatorDialog();
 
         result.ifPresent(coordinator -> {
-            selectedEvent.addCoordinator(coordinator);
+            eventModel.assignEventToCoordinator(coordinator, selectedEvent);
             showAlert("Assigned " + coordinator.getUsername() + " to " + selectedEvent.getName());
         });
     }
@@ -288,7 +297,5 @@ public class EventManagementController {
     private void showAlertLoad(String message) {
         new Alert(Alert.AlertType.ERROR, message).show();
     }
-
-
 }
 

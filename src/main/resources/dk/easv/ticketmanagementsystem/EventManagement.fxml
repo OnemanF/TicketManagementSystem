@@ -8,32 +8,45 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="/dk/easv/ticketmanagementsystem/EventManagement.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventManagementController">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane prefHeight="450.0" prefWidth="640.0"
+            stylesheets="/dk/easv/ticketmanagementsystem/EventManagement.css"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventManagementController">
+
     <children>
-        <TableView fx:id="tblEvents" layoutY="62.0" prefHeight="260.0" prefWidth="642.0">
-            <columns>
-                <TableColumn fx:id="colEventName" prefWidth="150.0" text="Event Name" />
-                <TableColumn fx:id="colDate" prefWidth="72.79998779296875" text="Date" />
-                <TableColumn fx:id="colStartTime" prefWidth="80.00001525878906" text="Time" />
-                <TableColumn fx:id="colLocation" minWidth="0.0" prefWidth="124.79998779296875" text="Location" />
-            <TableColumn fx:id="colNotes" prefWidth="212.79996337890623" text="Notes" />
-            </columns>
-        </TableView>
-        <Button fx:id="btnAddEvent" layoutX="14.0" layoutY="387.0" onAction="#handleAddEvent" text="Add Event" />
-        <Button fx:id="btnEditEvent" layoutX="101.0" layoutY="387.0" onAction="#handleEditEvent" text="Edit Event" />
-        <Button fx:id="btnDeleteEvent" layoutX="188.0" layoutY="387.0" onAction="#handleDeleteEvent" text="Delete Event" />
-        <Label layoutX="161.0" layoutY="3.0" text="Event Management">
-            <font>
-                <Font size="40.0" />
-            </font>
-        </Label>
-      <Button fx:id="btnAssignCoordinatorToMyEvent" layoutX="291.0" layoutY="386.0" onAction="#handleAssignCoordinatorToMyEvent" text="Assign Coordinator to my Event" />
-      <Button fx:id="btnBackToDashboard" layoutX="531.0" layoutY="387.0" mnemonicParsing="false" onAction="#handleBackToDashboard" text="Back to DashBoard" />
-      <ComboBox fx:id="cmbCoordinators" layoutX="291.0" layoutY="353.0" prefWidth="150.0" promptText="Choose Coordinator" />
-      <Label layoutX="291.0" layoutY="322.0" text="Select Coordinator:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
+        <!-- Main Layout Container -->
+        <VBox alignment="CENTER" spacing="20">
+            <!-- Title -->
+            <Label text="Event Management" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+
+            <!-- Table Section -->
+            <TableView fx:id="tblEvents" prefHeight="250.0" prefWidth="620.0">
+                <columns>
+                    <TableColumn fx:id="colEventName" text="Event Name" prefWidth="150"/>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="80"/>
+                    <TableColumn fx:id="colStartTime" text="Time" prefWidth="80"/>
+                    <TableColumn fx:id="colLocation" text="Location" prefWidth="120"/>
+                    <TableColumn fx:id="colNotes" text="Notes" prefWidth="200"/>
+                </columns>
+            </TableView>
+
+            <!-- Coordinator Selection -->
+            <HBox spacing="10">
+                <Label text="Select Coordinator:" style="-fx-font-size: 18px;"/>
+                <ComboBox fx:id="cmbCoordinators" prefWidth="200" promptText="Choose Coordinator"/>
+                <Button fx:id="btnAssignCoordinatorToMyEvent" onAction="#handleAssignCoordinatorToMyEvent" text="Assign Coordinator"/>
+            </HBox>
+
+            <!-- Button Section -->
+            <HBox spacing="10">
+                <Button fx:id="btnAddEvent" onAction="#handleAddEvent" text="Add Event"/>
+                <Button fx:id="btnEditEvent" onAction="#handleEditEvent" text="Edit Event"/>
+                <Button fx:id="btnDeleteEvent" onAction="#handleDeleteEvent" text="Delete Event"/>
+                <Button fx:id="btnBackToDashboard" onAction="#handleBackToDashboard" text="Back to Dashboard"/>
+            </HBox>
+        </VBox>
     </children>
 </AnchorPane>

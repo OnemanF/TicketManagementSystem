@@ -1,6 +1,8 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import dk.easv.ticketmanagementsystem.BE.*;
+import dk.easv.ticketmanagementsystem.Gui.Model.EventModel;
+import dk.easv.ticketmanagementsystem.Gui.Model.TicketModel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,15 +38,17 @@ public class EventCoordinatorController {
     private Button btnViewEvents, btnCreateEvent, btnAssignCoordinators, btnLogout;
     @FXML
     private ComboBox<Event> cmbEventSelection;
-
     @FXML
     private Label lblSelectedEvent;
 
-    private final ObservableList<Ticket> tickets = FXCollections.observableArrayList();
+    private TicketModel ticketModel;
 
-    private final ObservableList<Event> assignedEvents = FXCollections.observableArrayList();
+    private EventModel eventModel;
 
-
+    public EventCoordinatorController(){
+        this.ticketModel = new TicketModel();
+        this.eventModel = new EventModel();
+    }
 
     @FXML
     public void initialize() {
@@ -52,16 +56,19 @@ public class EventCoordinatorController {
         colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         colTicketType.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
 
-        tblTickets.setItems(tickets);
+        tblTickets.setItems(ticketModel.getTickets());
 
         loadAssignedEvents();
         setupEventSelectionListener();
-
     }
 
     private void loadAssignedEvents() {
-        assignedEvents.setAll(EventManager.getInstance().getEvents());
-        cmbEventSelection.setItems(assignedEvents);
+        eventModel.loadAssignedEvents(getCurrentUser());
+        cmbEventSelection.setItems(eventModel.getAssignedEvents());
+    }
+
+    private User getCurrentUser() {
+        return UserManager.getInstance().getUsers().stream().findFirst().orElse(null);
     }
 
     private void setupEventSelectionListener() {
@@ -69,6 +76,7 @@ public class EventCoordinatorController {
             if (newEvent != null) {
                 SelectedEventManager.getInstance().setSelectedEvent(newEvent);
                 lblSelectedEvent.setText("Selected Event: " + newEvent.getName());
+                ticketModel.loadTicketsForEvent(newEvent);
             }
         });
     }
@@ -98,10 +106,11 @@ public class EventCoordinatorController {
     @FXML
     private void handleAddTicket(ActionEvent event) {
         Event selectedEvent = cmbEventSelection.getSelectionModel().getSelectedItem();
-
         if (selectedEvent != null) {
             Optional<Ticket> result = showTicketDialog(selectedEvent);
-            result.ifPresent(tickets::add);
+            result.ifPresent(ticket -> {
+                ticketModel.addTicket(ticket);
+            });
         } else {
             showAlert("Please select an event first.");
         }
@@ -133,7 +142,7 @@ public class EventCoordinatorController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return new Ticket(event, ticketTypeField.getText(), tickets.size() + 1, customerNameField.getText());
+                return new Ticket(event, ticketTypeField.getText(), ticketModel.getTickets().size() + 1, customerNameField.getText());
             }
             return null;
         });
@@ -164,7 +173,7 @@ public class EventCoordinatorController {
 
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.YES) {
-                    tickets.remove(selectedTicket);
+                    ticketModel.deleteTicket(selectedTicket);
                 }
             });
         }

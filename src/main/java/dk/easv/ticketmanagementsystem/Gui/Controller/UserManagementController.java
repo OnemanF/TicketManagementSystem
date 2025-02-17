@@ -3,6 +3,7 @@ package dk.easv.ticketmanagementsystem.Gui.Controller;
 import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.Gui.Model.UserModel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,7 +37,11 @@ public class UserManagementController {
     @FXML
     private Button btnAddUser, btnEditUser, btnDeleteUser, btnAssignEventToCoordinator, btnLogout;
 
-    private final ObservableList<User> users = FXCollections.observableArrayList();
+    private UserModel userModel;
+
+    public UserManagementController(){
+        this.userModel = new UserModel();
+    }
 
     @FXML
     public void initialize() {
@@ -44,18 +49,18 @@ public class UserManagementController {
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colAssignedEvents.setCellValueFactory(new PropertyValueFactory<>("assignedEvents"));
 
-        tblUsers.setItems(users);
+        tblUsers.setItems(userModel.getUsers());
         loadEvents();
     }
 
     @FXML
     private void handleAddUser(ActionEvent event) {
         Optional<User> result = showUserDialog(null);
-        result.ifPresent(users::add);
+        result.ifPresent(userModel::addUser);
     }
 
     private void loadEvents() {
-        cmbEvents.setItems(EventManager.getInstance().getEvents()); // Populate event list
+        cmbEvents.setItems(EventManager.getInstance().getEvents());
     }
 
     @FXML
@@ -102,7 +107,7 @@ public class UserManagementController {
 
             Optional<ButtonType> result = confirmation.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                users.remove(selectedUser);
+                userModel.deleteUser(selectedUser);
             }
         } else {
             showAlert("No user selected", "Please select a user to delete.", Alert.AlertType.WARNING);
@@ -136,7 +141,8 @@ public class UserManagementController {
             return;
         }
 
-        selectedEvent.addCoordinator(selectedUser);
+        selectedUser.assignEvent(selectedEvent);
+        tblUsers.refresh();
         showAlert("User " + selectedUser.getUsername() + " assigned to event " + selectedEvent.getName());
     }
 
@@ -171,7 +177,6 @@ public class UserManagementController {
         roleBox.setPrefWidth(200);
         if (user != null) roleBox.setValue(user.getRole());
 
-        // Arrange UI elements in the grid
         grid.add(new Label("Username:"), 0, 0);
         grid.add(usernameField, 1, 0);
         grid.add(new Label("Password:"), 0, 1);
@@ -184,12 +189,13 @@ public class UserManagementController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return new User(users.size() + 1, usernameField.getText(), passwordField.getText(), roleBox.getValue());
+                return new User(userModel.getUsers().size() + 1, usernameField.getText(), passwordField.getText(), roleBox.getValue());
             }
             return null;
         });
 
         return dialog.showAndWait();
     }
-
 }
+
+

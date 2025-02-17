@@ -1,23 +1,57 @@
-#btnManageUsers{
-    -fx-background-color: #6E6E6E;
+AnchorPane {
+    -fx-background-color: #2C3E50; /* Dark navy for a professional, clean look */
+    -fx-padding: 20px;
+}
+
+/* Labels */
+Label {
     -fx-text-fill: white;
+    -fx-font-family: "Arial";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
-#btnAssignCoordinators{
-    -fx-background-color: #6E6E6E;
+/* Dashboard Title */
+Label {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ECF0F1; /* Soft white for contrast */
+}
+
+/* Buttons - Simple, Elegant Design */
+.button {
+    -fx-background-color: #34495E; /* Classy dark gray */
     -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
 }
 
-#btnLogout{
-    -fx-background-color: #6E6E6E;
-    -fx-text-fill: white;
+/* Hover Effect */
+.button:hover {
+    -fx-background-color: #1F2D3D;
 }
 
-AnchorPane{
-    -fx-background-color: #624DE3;
+/* Pressed Effect */
+.button:pressed {
+    -fx-background-color: #17212B;
 }
 
-Label{
-    -fx-text-fill: White;
+/* Specific Button Customization */
+#btnManageUsers {
+    -fx-background-color: #2980B9; /* Blue */
+}
+#btnManageUsers:hover {
+    -fx-background-color: #2471A3;
 }
 
+#btnLogout {
+    -fx-background-color: #C0392B; /* Soft red */
+}
+#btnLogout:hover {
+    -fx-background-color: #A93226;
+}

@@ -1,12 +1,95 @@
-Label{
-    -fx-text-fill: White;
+
+AnchorPane {
+    -fx-background-color: #2C3E50;
+    -fx-padding: 20px;
 }
 
-Button{
-    -fx-background-color: #6E6E6E;
+
+Label {
     -fx-text-fill: white;
+    -fx-font-family: "Arial";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
-AnchorPane{
-    -fx-background-color: #624DE3;
+
+Label{
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ECF0F1;
+}
+
+
+.button {
+    -fx-background-color: #3A3F44;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-padding: 8px 18px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #555;
+    -fx-border-width: 1px;
+    -fx-cursor: hand;
+}
+
+
+.button:hover {
+    -fx-background-color: #4A4F55;
+}
+
+
+.button:pressed {
+    -fx-background-color: #2E3236;
+}
+
+
+#btnAddEvent {
+    -fx-background-color: #3A3F44;
+}
+#btnAddEvent:hover {
+    -fx-background-color: #3A3F44;
+}
+
+#btnEditEvent {
+    -fx-background-color: #3A3F44;
+}
+#btnEditEvent:hover {
+    -fx-background-color: #3A3F44;
+}
+
+#btnDeleteEvent {
+    -fx-background-color: #3A3F44;
+}
+#btnDeleteEvent:hover {
+    -fx-background-color: #3A3F44;
+}
+
+#btnAssignCoordinatorToMyEvent {
+    -fx-background-color: #3A3F44;
+}
+#btnAssignCoordinatorToMyEvent:hover {
+    -fx-background-color: #3A3F44;
+}
+
+#btnBackToDashboard {
+    -fx-background-color: #3A3F44;
+}
+#btnBackToDashboard:hover {
+    -fx-background-color: #3A3F44;
+}
+
+/* Table Styling */
+TableView {
+    -fx-background-color: #ECF0F1;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #BDC3C7;
+}
+
+
+TableColumn {
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-alignment: CENTER;
 }

@@ -1,5 +1,7 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
+import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.Gui.Model.LoginModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,8 +26,10 @@ public class LoginController implements Initializable {
     @FXML
     private Button btnLogin;
 
-    public LoginController(){
+    private LoginModel loginModel;
 
+    public LoginController(){
+        this.loginModel = new LoginModel();
     }
 
     @Override
@@ -53,10 +57,16 @@ public class LoginController implements Initializable {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
 
-        if ("admin".equals(username) && "password".equals(password)) {
-            loadDashboard("UserManagement.fxml");
-        } else if ("coordinator".equals(username) && "password".equals(password)) {
-            loadDashboard("EventManagement.fxml");
+        if (loginModel.authenticate(username, password)) {
+            User user = loginModel.getAuthenticatedUser(username);
+
+            if ("Admin".equalsIgnoreCase(user.getRole())) {
+                loadDashboard("UserManagement.fxml");
+            } else if ("Event Coordinator".equalsIgnoreCase(user.getRole())) {
+                loadDashboard("EventManagement.fxml");
+            } else {
+                showError("Role not recognized.");
+            }
         } else {
             showError("Invalid credentials! Try again.");
         }

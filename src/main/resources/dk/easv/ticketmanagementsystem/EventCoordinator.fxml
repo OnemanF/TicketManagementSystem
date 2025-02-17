@@ -6,49 +6,50 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="545.0" prefWidth="726.0"
-            stylesheets="/dk/easv/ticketmanagementsystem/EventCoordinator.css"
-            xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventCoordinatorController">
+<AnchorPane prefHeight="545.0" prefWidth="726.0" stylesheets="/dk/easv/ticketmanagementsystem/EventCoordinator.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventCoordinatorController">
 
     <children>
-        <Label layoutX="132.0" layoutY="26.0" text="Event Coordinator Dashboard">
-            <font>
-                <Font size="40.0" />
-            </font>
-        </Label>
-        <Label layoutX="31.0" layoutY="104.0" text="Handle Events">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
+        <!-- Vertical Layout for Better Structure -->
+        <VBox alignment="CENTER" layoutX="20" layoutY="20" spacing="20">
 
-        <Button fx:id="btnViewEvents" layoutX="36.0" layoutY="143.0" onAction="#handleViewEvents" text="View My Events" />
-        <Button fx:id="btnCreateEvent" layoutX="33.0" layoutY="182.0" onAction="#handleCreateEvent" text="Create Event" />
-        <Button fx:id="btnAssignCoordinators" layoutX="33.0" layoutY="220.0" onAction="#handleAssignCoordinators" text="Assign Coordinators to My Events" />
+            <!-- Title -->
+            <Label style="-fx-font-size: 30px; -fx-font-weight: bold;" text="Event Coordinator Dashboard" />
 
-        <Label layoutX="32.0" layoutY="282.0" text="Handle Tickets">
-            <font>
-                <Font size="20.0" />
-            </font>
-        </Label>
+            <!-- Handle Events Section -->
+            <VBox spacing="10">
+                <Label style="-fx-font-size: 18px;" text="Manage Events" />
+                <HBox spacing="10">
+                    <Button fx:id="btnViewEvents" onAction="#handleViewEvents" text="View My Events" />
+                    <Button fx:id="btnCreateEvent" onAction="#handleCreateEvent" text="Create Event" />
+                    <Button fx:id="btnAssignCoordinators" onAction="#handleAssignCoordinators" text="Assign Coordinators" />
+                </HBox>
+            </VBox>
 
-        <ComboBox fx:id="cmbEventSelection" layoutX="33.0" layoutY="321.0" prefWidth="200.0" promptText="Select an Event" />
-        <Label fx:id="lblSelectedEvent" layoutX="250.0" layoutY="321.0" text="No event selected" />
+            <!-- Handle Tickets Section -->
+            <VBox spacing="10">
+                <Label style="-fx-font-size: 18px;" text="Manage Tickets" />
+                <HBox spacing="10">
+                    <ComboBox fx:id="cmbEventSelection" prefWidth="200.0" promptText="Select an Event" />
+                    <Label fx:id="lblSelectedEvent" text="No event selected" />
+                </HBox>
+                <TableView fx:id="tblTickets" prefHeight="250" prefWidth="450">
+                    <columns>
+                        <TableColumn fx:id="colTicketID" prefWidth="100" text="Ticket ID" />
+                        <TableColumn fx:id="colCustomerName" prefWidth="200" text="Customer Name" />
+                        <TableColumn fx:id="colTicketType" prefWidth="150" text="Ticket Type" />
+                    </columns>
+                </TableView>
+                <HBox spacing="10">
+                    <Button fx:id="btnAddTicket" onAction="#handleAddTicket" text="Add Ticket" />
+                    <Button fx:id="btnDeleteTicket" onAction="#handleDeleteTicket" text="Delete Ticket" />
+                </HBox>
+            </VBox>
 
-        <TableView fx:id="tblTickets" layoutX="238.0" layoutY="135.0" prefHeight="294.0" prefWidth="458.0">
-            <columns>
-                <TableColumn fx:id="colTicketID" prefWidth="108.8" text="Ticket ID" />
-                <TableColumn fx:id="colCustomerName" prefWidth="175.99" text="Customer Name" />
-                <TableColumn fx:id="colTicketType" prefWidth="172.8" text="Ticket Type" />
-            </columns>
-        </TableView>
-        <Button fx:id="btnAddTicket" layoutX="34.0" layoutY="362.0" onAction="#handleAddTicket" text="Add Ticket" />
-        <Button fx:id="btnDeleteTicket" layoutX="32.0" layoutY="403.0" onAction="#handleDeleteTicket" text="Delete Ticket" />
-        <Button fx:id="btnLogout" layoutX="641.0" layoutY="461.0" onAction="#handleLogout" text="Logout" />
+            <!-- Logout Button at the Bottom -->
+            <Button fx:id="btnLogout" onAction="#handleLogout" style="-fx-background-color: #C0392B;" text="Logout" />
+        </VBox>
     </children>
-
 </AnchorPane>
