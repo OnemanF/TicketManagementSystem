@@ -1,20 +1,28 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import dk.easv.ticketmanagementsystem.BE.Event;
+import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BE.UserManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.event.ActionEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +30,8 @@ import java.util.Optional;
 public class EventManagementController {
     @FXML
     private TableView<Event> tblEvents;
+    @FXML
+    private ComboBox<User> cmbCoordinators;
     @FXML
     private TableColumn<Event, String> colEventName;
     @FXML
@@ -31,6 +41,8 @@ public class EventManagementController {
     @FXML
     private TableColumn<Event, LocalDateTime> colStartTime;
     @FXML
+    private TableColumn<Event, String> colNotes;
+    @FXML
     private Button btnAddEvent, btnEditEvent, btnDeleteEvent, btnAssignCoordinatorToMyEvent;
 
     private final ObservableList<Event> events = FXCollections.observableArrayList();
@@ -39,8 +51,9 @@ public class EventManagementController {
     public void initialize() {
         colEventName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-        colDate.setCellValueFactory(new PropertyValueFactory<>("Date"));
-        colStartTime.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colStartTime.setCellValueFactory(new PropertyValueFactory<>("time"));
+        colNotes.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
         tblEvents.setItems(events);
 
@@ -49,12 +62,17 @@ public class EventManagementController {
                 SelectedEventManager.getInstance().setSelectedEvent(newSelection);
             }
         });
+
+        loadAvailableCoordinators();
     }
 
     @FXML
     private void handleAddEvent(ActionEvent event) {
         Optional<Event> result = showAddEventDialog();
-        result.ifPresent(events::add);
+        result.ifPresent(newEvent -> {
+            EventManager.getInstance().addEvent(newEvent);
+            events.add(newEvent);
+        });
     }
 
     private Optional<Event> showAddEventDialog() {
@@ -113,13 +131,70 @@ public class EventManagementController {
         return dialog.showAndWait();
     }
 
+    private Optional<Event> showEditEventDialog(Event event) {
+        Dialog<Event> dialog = new Dialog<>();
+        dialog.setTitle("Edit Event");
+
+        ButtonType saveButtonType = new ButtonType("Save Changes", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(20));
+
+        TextField eventNameField = new TextField(event.getName());
+        TextField locationField = new TextField(event.getLocation());
+        TextField notesField = new TextField(event.getNotes());
+        DatePicker datePicker = new DatePicker(event.getDate());
+        TextField timeField = new TextField(event.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+
+        grid.add(new Label("Event Name:"), 0, 0);
+        grid.add(eventNameField, 1, 0);
+        grid.add(new Label("Location:"), 0, 1);
+        grid.add(locationField, 1, 1);
+        grid.add(new Label("Notes:"), 0, 2);
+        grid.add(notesField, 1, 2);
+        grid.add(new Label("Date:"), 0, 3);
+        grid.add(datePicker, 1, 3);
+        grid.add(new Label("Start Time (HH:mm):"), 0, 4);
+        grid.add(timeField, 1, 4);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(eventNameField::requestFocus);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == saveButtonType) {
+                try {
+                    LocalTime time = LocalTime.parse(timeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
+                    LocalDateTime startTime = LocalDateTime.of(datePicker.getValue(), time);
+
+                    event.setName(eventNameField.getText());
+                    event.setLocation(locationField.getText());
+                    event.setNotes(notesField.getText());
+                    event.setStartTime(startTime);
+
+                    return event;
+                } catch (DateTimeParseException e) {
+                    showAlert("Invalid time format! Use HH:mm");
+                }
+            }
+            return null;
+        });
+
+        return dialog.showAndWait();
+    }
+
     @FXML
     private void handleEditEvent(ActionEvent event) {
         Event selectedEvent = tblEvents.getSelectionModel().getSelectedItem();
-        if (selectedEvent != null) {
-            selectedEvent.setName("Updated Event");
-            tblEvents.refresh();
+        if (selectedEvent == null) {
+            showAlert("Please select an event to edit.");
+            return;
         }
+
+        Optional<Event> result = showEditEventDialog(selectedEvent);
+        result.ifPresent(updatedEvent -> tblEvents.refresh());
     }
 
     @FXML
@@ -135,14 +210,15 @@ public class EventManagementController {
         Event selectedEvent = tblEvents.getSelectionModel().getSelectedItem();
 
         if (selectedEvent == null) {
-            showAlert("Please select an event to assign a coordinator.");
+            showAlert("Please select an event.");
             return;
         }
 
         Optional<User> result = showAssignCoordinatorDialog();
+
         result.ifPresent(coordinator -> {
             selectedEvent.addCoordinator(coordinator);
-            System.out.println("Assigned " + coordinator.getUsername() + " to Event: " + selectedEvent.getName());
+            showAlert("Assigned " + coordinator.getUsername() + " to " + selectedEvent.getName());
         });
     }
 
@@ -154,7 +230,7 @@ public class EventManagementController {
         dialog.getDialogPane().getButtonTypes().addAll(assignButtonType, ButtonType.CANCEL);
 
         ComboBox<User> comboCoordinators = new ComboBox<>();
-        comboCoordinators.setItems(FXCollections.observableArrayList(getAvailableCoordinators()));
+        comboCoordinators.setItems(getAvailableCoordinators());
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(20));
@@ -172,12 +248,15 @@ public class EventManagementController {
         return dialog.showAndWait();
     }
 
-    private List<User> getAvailableCoordinators() {
-        return List.of(
-                new User(1, "coordinator1", "password1", "Coordinator"),
-                new User(2, "coordinator2", "password2", "Coordinator")
-        );
+    private void loadAvailableCoordinators() {
+        ObservableList<User> coordinators = UserManager.getInstance().getCoordinators();
+        cmbCoordinators.setItems(FXCollections.observableArrayList(coordinators));
     }
+
+    private ObservableList<User> getAvailableCoordinators() {
+        return FXCollections.observableArrayList(UserManager.getInstance().getCoordinators());
+    }
+
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -186,5 +265,30 @@ public class EventManagementController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+    private void handleBackToDashboard(ActionEvent event) {
+        loadScene("EventCoordinator.fxml");
+    }
+
+    private void loadScene(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/ticketmanagementsystem/" + fxml));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) tblEvents.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlertLoad("Error loading " + fxml);
+        }
+    }
+
+    private void showAlertLoad(String message) {
+        new Alert(Alert.AlertType.ERROR, message).show();
+    }
+
+
 }
 

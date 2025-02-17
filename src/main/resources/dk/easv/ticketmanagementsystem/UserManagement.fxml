@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -19,11 +20,13 @@
         <Button fx:id="btnAddUser" layoutX="45.0" layoutY="374.0" onAction="#handleAddUser" text="Add User" />
         <Button fx:id="btnEditUser" layoutX="136.0" layoutY="374.0" onAction="#handleEditUser" text="Edit User" />
         <Button fx:id="btnDeleteUser" layoutX="222.0" layoutY="374.0" onAction="#handleDeleteUser" text="Delete User" />
-        <Button fx:id="btnAssignEventToCoordinator" layoutX="327.0" layoutY="373.0" onAction="#handleAssignEvent" text="Assign Event to Coordinator" />
+        <Button fx:id="btnAssignEventToCoordinator" layoutX="314.0" layoutY="411.0" onAction="#handleAssignEvent" text="Assign Event to Coordinator" />
         <Label layoutX="145.0" text="User Management">
             <font>
                 <Font size="40.0" />
             </font>
         </Label>
+      <Button fx:id="btnLogout" layoutX="506.0" layoutY="374.0" mnemonicParsing="false" onAction="#HandleLogout" text="Logout" />
+      <ComboBox fx:id="cmbEvents" layoutX="321.0" layoutY="374.0" prefWidth="150.0" promptText="Select Event" />
     </children>
 </AnchorPane>

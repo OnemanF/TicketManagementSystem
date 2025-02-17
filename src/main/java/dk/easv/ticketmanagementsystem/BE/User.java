@@ -66,5 +66,10 @@ public class User {
         return assignedEvents.stream().map(Event::getName).collect(Collectors.joining(", "));
     }
 
+    @Override
+    public String toString() {
+        return getUsername();
+    }
+
 }
 

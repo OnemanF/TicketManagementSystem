@@ -1,7 +1,6 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
-import dk.easv.ticketmanagementsystem.BE.Event;
-import dk.easv.ticketmanagementsystem.BE.Ticket;
+import dk.easv.ticketmanagementsystem.BE.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public class EventCoordinatorController {
@@ -33,8 +34,15 @@ public class EventCoordinatorController {
     private Button btnAddTicket, btnDeleteTicket;
     @FXML
     private Button btnViewEvents, btnCreateEvent, btnAssignCoordinators, btnLogout;
+    @FXML
+    private ComboBox<Event> cmbEventSelection;
+
+    @FXML
+    private Label lblSelectedEvent;
 
     private final ObservableList<Ticket> tickets = FXCollections.observableArrayList();
+
+    private final ObservableList<Event> assignedEvents = FXCollections.observableArrayList();
 
 
 
@@ -45,7 +53,27 @@ public class EventCoordinatorController {
         colTicketType.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
 
         tblTickets.setItems(tickets);
+
+        loadAssignedEvents();
+        setupEventSelectionListener();
+
     }
+
+    private void loadAssignedEvents() {
+        assignedEvents.setAll(EventManager.getInstance().getEvents());
+        cmbEventSelection.setItems(assignedEvents);
+    }
+
+    private void setupEventSelectionListener() {
+        cmbEventSelection.getSelectionModel().selectedItemProperty().addListener((obs, oldEvent, newEvent) -> {
+            if (newEvent != null) {
+                SelectedEventManager.getInstance().setSelectedEvent(newEvent);
+                lblSelectedEvent.setText("Selected Event: " + newEvent.getName());
+            }
+        });
+    }
+
+
 
     @FXML
     private void handleViewEvents(ActionEvent event) {
@@ -59,7 +87,7 @@ public class EventCoordinatorController {
 
     @FXML
     private void handleAssignCoordinators(ActionEvent event) {
-        loadScene("UserManagement.fxml");
+        loadScene("EventManagement.fxml");
     }
 
     @FXML
@@ -69,12 +97,13 @@ public class EventCoordinatorController {
 
     @FXML
     private void handleAddTicket(ActionEvent event) {
-        Event selectedEvent = getSelectedEvent();
+        Event selectedEvent = cmbEventSelection.getSelectionModel().getSelectedItem();
+
         if (selectedEvent != null) {
             Optional<Ticket> result = showTicketDialog(selectedEvent);
             result.ifPresent(tickets::add);
         } else {
-            showAlert("No event selected. Please select an event in Event Management first.");
+            showAlert("Please select an event first.");
         }
     }
 
@@ -110,6 +139,14 @@ public class EventCoordinatorController {
         });
 
         return dialog.showAndWait();
+    }
+
+    @FXML
+    private void handleEventSelection() {
+        Event selectedEvent = cmbEventSelection.getSelectionModel().getSelectedItem();
+        if (selectedEvent != null) {
+            EventManager.getInstance().setSelectedEvent(selectedEvent);
+        }
     }
 
 
@@ -150,5 +187,6 @@ public class EventCoordinatorController {
     private void showAlert(String message) {
         new Alert(Alert.AlertType.ERROR, message).show();
     }
+
 }
 

@@ -1,6 +1,8 @@
 package dk.easv.ticketmanagementsystem.BE;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,6 +64,14 @@ public class Event {
         this.id = id;
     }
 
+    public LocalDate getDate() {
+        return startTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return startTime.toLocalTime();
+    }
+
     public List<User> getAssignedCoordinators() {
         return assignedCoordinators;
     }
@@ -69,11 +79,16 @@ public class Event {
     public void addCoordinator(User user) {
         if (!assignedCoordinators.contains(user)) {
             this.assignedCoordinators.add(user);
-            user.assignEvent(this);  // Ensure the user also tracks this event
+            user.assignEvent(this);
         }
     }
 
     public String getCoordinatorsString() {
         return assignedCoordinators.stream().map(User::getUsername).collect(Collectors.joining(", "));
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

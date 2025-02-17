@@ -1,17 +1,25 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
+import dk.easv.ticketmanagementsystem.BE.Event;
+import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.event.ActionEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class UserManagementController {
@@ -24,7 +32,9 @@ public class UserManagementController {
     @FXML
     private TableColumn<User, String> colAssignedEvents;
     @FXML
-    private Button btnAddUser, btnEditUser, btnDeleteUser, btnAssignEventToCoordinator;
+    private ComboBox<Event> cmbEvents;
+    @FXML
+    private Button btnAddUser, btnEditUser, btnDeleteUser, btnAssignEventToCoordinator, btnLogout;
 
     private final ObservableList<User> users = FXCollections.observableArrayList();
 
@@ -35,12 +45,35 @@ public class UserManagementController {
         colAssignedEvents.setCellValueFactory(new PropertyValueFactory<>("assignedEvents"));
 
         tblUsers.setItems(users);
+        loadEvents();
     }
 
     @FXML
     private void handleAddUser(ActionEvent event) {
         Optional<User> result = showUserDialog(null);
         result.ifPresent(users::add);
+    }
+
+    private void loadEvents() {
+        cmbEvents.setItems(EventManager.getInstance().getEvents()); // Populate event list
+    }
+
+    @FXML
+    private void HandleLogout(ActionEvent event) {
+        loadScene("Login.fxml");
+    }
+
+    private void loadScene(String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/ticketmanagementsystem/" + fxmlFile));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) btnLogout.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -86,8 +119,34 @@ public class UserManagementController {
 
     @FXML
     private void handleAssignEvent(ActionEvent event) {
-        new Alert(Alert.AlertType.INFORMATION, "Assign Event to Coordinator clicked").show();
+        Event selectedEvent = cmbEvents.getSelectionModel().getSelectedItem();
+        if (selectedEvent == null) {
+            showAlert("Please select an event.");
+            return;
+        }
+
+        User selectedUser = tblUsers.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            showAlert("Please select a user.");
+            return;
+        }
+
+        if (!"Coordinator".equalsIgnoreCase(selectedUser.getRole())) {
+            showAlert("Only Coordinators can be assigned to events.");
+            return;
+        }
+
+        selectedEvent.addCoordinator(selectedUser);
+        showAlert("User " + selectedUser.getUsername() + " assigned to event " + selectedEvent.getName());
     }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
 
     private Optional<User> showUserDialog(User user) {
         Dialog<User> dialog = new Dialog<>();
