@@ -2,6 +2,7 @@ package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import dk.easv.ticketmanagementsystem.BE.User;
 import dk.easv.ticketmanagementsystem.BE.UserManager;
+import dk.easv.ticketmanagementsystem.BLL.UserBLL;
 import dk.easv.ticketmanagementsystem.Gui.Model.LoginModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.sql.SQLException;
 
 public class LoginController implements Initializable {
     @FXML
@@ -36,6 +38,28 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {}
 
+    public void handleLogin(ActionEvent actionEvent) {
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+
+        if (loginModel.authenticate(username, password)) {
+            User user = loginModel.getAuthenticatedUser(username, password);
+
+            if (user != null) {
+                if ("Admin".equalsIgnoreCase(user.getRole())) {
+                    loadDashboard("UserManagement.fxml");
+                } else if ("Event Coordinator".equalsIgnoreCase(user.getRole())) {
+                    loadDashboard("EventManagement.fxml");
+                } else {
+                    showError("Role not recognized.");
+                }
+            }
+        } else {
+            showError("Invalid credentials! Try again.");
+        }
+    }
+
+
     private void loadDashboard(String fxmlFile) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
@@ -51,34 +75,6 @@ public class LoginController implements Initializable {
 
     private void showError(String message) {
         new Alert(Alert.AlertType.ERROR, message).show();
-    }
-
-    public void handleLogin(ActionEvent actionEvent) {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
-
-        if (loginModel.authenticate(username, password)) {
-            User user = loginModel.getAuthenticatedUser(username);
-
-            if ("Admin".equalsIgnoreCase(user.getRole())) {
-                loadDashboard("UserManagement.fxml");
-            } else if ("Event Coordinator".equalsIgnoreCase(user.getRole())) {
-                loadDashboard("EventManagement.fxml");
-            } else {
-                showError("Role not recognized.");
-            }
-        } else {
-            showError("Invalid credentials! Try again.");
-        }
-    }
-
-    public void handleRegister(ActionEvent actionEvent) {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
-        String role = "Event Coordinator"; // Change as needed
-
-        UserManager.getInstance().addUser(username, password, role);
-        showError("User registered successfully!");
     }
 }
 

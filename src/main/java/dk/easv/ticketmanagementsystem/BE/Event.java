@@ -5,17 +5,18 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Event {
-    private int id;
+    private UUID id;
     private String name;
     private LocalDateTime startTime;
     private String location;
     private String notes;
     private List<User> assignedCoordinators; // Stores users assigned to this event
 
-    public Event(int id, String name, LocalDateTime startTime, String location, String notes) {
+    public Event(UUID  id, String name, LocalDateTime startTime, String location, String notes) {
         this.id = id;
         this.name = name;
         this.startTime = startTime;
@@ -56,11 +57,11 @@ public class Event {
         this.name = name;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

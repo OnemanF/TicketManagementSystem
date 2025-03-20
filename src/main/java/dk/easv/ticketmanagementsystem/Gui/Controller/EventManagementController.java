@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class EventManagementController {
     @FXML
@@ -130,7 +131,7 @@ public class EventManagementController {
 
                 LocalDateTime startTime = LocalDateTime.of(datePicker.getValue(), time);
 
-                int newEventId = eventModel.getEvents().size() + 1;
+                UUID newEventId = UUID.randomUUID();  // Generate a unique UUID instead of an int
 
                 return new Event(newEventId, eventName, startTime, location, notes);
             }

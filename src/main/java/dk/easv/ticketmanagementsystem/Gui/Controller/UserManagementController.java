@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BLL.UserBLL;
 import dk.easv.ticketmanagementsystem.Gui.Model.UserModel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -22,7 +23,9 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
+import java.util.UUID;
 
 public class UserManagementController {
     @FXML
@@ -38,9 +41,12 @@ public class UserManagementController {
     @FXML
     private Button btnAddUser, btnEditUser, btnDeleteUser, btnAssignEventToCoordinator, btnLogout;
 
+    private UserBLL userBLL;
     private UserModel userModel;
+    private ObservableList<User> users = FXCollections.observableArrayList();
 
-    public UserManagementController(){
+    public UserManagementController() {
+        this.userBLL = new UserBLL();
         this.userModel = new UserModel();
     }
 
@@ -50,14 +56,29 @@ public class UserManagementController {
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colAssignedEvents.setCellValueFactory(new PropertyValueFactory<>("assignedEvents"));
 
-        tblUsers.setItems(userModel.getUsers());
+        try {
+            users.addAll(userBLL.getAllUsers()); // Load users from database
+            tblUsers.setItems(users);
+        } catch (SQLException e) {
+            showAlert("Error", "Failed to load users from database!", Alert.AlertType.ERROR);
+        }
+
         loadEvents();
     }
 
     @FXML
     private void handleAddUser(ActionEvent event) {
         Optional<User> result = showUserDialog(null);
-        result.ifPresent(user -> userModel.addUser(user.getUsername(), user.getHashedPassword(), user.getRole()));
+        result.ifPresent(user -> {
+            try {
+                userModel.addUser(user.getUsername(), user.getHashedPassword(), user.getRole());
+                users.setAll(userModel.getUsers()); // Refresh UI
+                showAlert("Success", "User added successfully!", Alert.AlertType.INFORMATION);
+            } catch (Exception e) { // Catch generic exception
+                showAlert("Error", "Error saving user to database!", Alert.AlertType.ERROR);
+                e.printStackTrace();
+            }
+        });
     }
 
     private void loadEvents() {
@@ -73,12 +94,11 @@ public class UserManagementController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/ticketmanagementsystem/" + fxmlFile));
             Parent root = loader.load();
-
             Stage stage = (Stage) btnLogout.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Error", "Failed to load scene!", Alert.AlertType.ERROR);
         }
     }
 
@@ -88,12 +108,16 @@ public class UserManagementController {
         if (selectedUser != null) {
             Optional<User> result = showUserDialog(selectedUser);
             result.ifPresent(updatedUser -> {
-                selectedUser.setUsername(updatedUser.getUsername());
-                selectedUser.setRole(updatedUser.getRole());
-                tblUsers.refresh();
+                try {
+                    userBLL.updateUser(updatedUser);
+                    users.set(users.indexOf(selectedUser), updatedUser); // Refresh UI
+                    showAlert("Success", "User updated successfully!", Alert.AlertType.INFORMATION);
+                } catch (SQLException e) {
+                    showAlert("Error", "Error updating user!", Alert.AlertType.ERROR);
+                }
             });
         } else {
-            showAlert("No user selected", "Please select a user to edit.", Alert.AlertType.WARNING);
+            showAlert("Warning", "Please select a user to edit.", Alert.AlertType.WARNING);
         }
     }
 
@@ -108,10 +132,16 @@ public class UserManagementController {
 
             Optional<ButtonType> result = confirmation.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                userModel.deleteUser(selectedUser);
+                try {
+                    userBLL.deleteUser(selectedUser);
+                    users.remove(selectedUser); // Remove from UI
+                    showAlert("Success", "User deleted successfully!", Alert.AlertType.INFORMATION);
+                } catch (SQLException e) {
+                    showAlert("Error", "Error deleting user!", Alert.AlertType.ERROR);
+                }
             }
         } else {
-            showAlert("No user selected", "Please select a user to delete.", Alert.AlertType.WARNING);
+            showAlert("Warning", "Please select a user to delete.", Alert.AlertType.WARNING);
         }
     }
 
@@ -120,40 +150,32 @@ public class UserManagementController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.show();
+        alert.showAndWait();
     }
 
     @FXML
     private void handleAssignEvent(ActionEvent event) {
         Event selectedEvent = cmbEvents.getSelectionModel().getSelectedItem();
         if (selectedEvent == null) {
-            showAlert("Please select an event.");
+            showAlert("Warning", "Please select an event.", Alert.AlertType.WARNING);
             return;
         }
 
         User selectedUser = tblUsers.getSelectionModel().getSelectedItem();
         if (selectedUser == null) {
-            showAlert("Please select a user.");
+            showAlert("Warning", "Please select a user.", Alert.AlertType.WARNING);
             return;
         }
 
         if (!"Coordinator".equalsIgnoreCase(selectedUser.getRole())) {
-            showAlert("Only Coordinators can be assigned to events.");
+            showAlert("Warning", "Only Coordinators can be assigned to events.", Alert.AlertType.WARNING);
             return;
         }
 
         selectedUser.assignEvent(selectedEvent);
         tblUsers.refresh();
-        showAlert("User " + selectedUser.getUsername() + " assigned to event " + selectedEvent.getName());
+        showAlert("Success", "User " + selectedUser.getUsername() + " assigned to event " + selectedEvent.getName(), Alert.AlertType.INFORMATION);
     }
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
 
     private Optional<User> showUserDialog(User user) {
         Dialog<User> dialog = new Dialog<>();
@@ -190,8 +212,12 @@ public class UserManagementController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
+                // Hash the password
                 String hashedPassword = BCrypt.withDefaults().hashToString(12, passwordField.getText().toCharArray());
-                return new User(userModel.getUsers().size() + 1, usernameField.getText(), hashedPassword, roleBox.getValue());
+                UUID id = (user != null) ? user.getId() : UUID.randomUUID();
+
+                // Create the user without re-hashing the password
+                return new User(id, usernameField.getText(), hashedPassword, roleBox.getValue(), false);
             }
             return null;
         });
@@ -199,5 +225,4 @@ public class UserManagementController {
         return dialog.showAndWait();
     }
 }
-
 

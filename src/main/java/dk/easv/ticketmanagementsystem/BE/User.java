@@ -2,21 +2,22 @@ package dk.easv.ticketmanagementsystem.BE;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class User {
-    private int id;
+    private UUID id;
     private String username;
     private String hashedPassword;
     private String role;
     private List<Event> assignedEvents;
 
-    public User(int id, String username, String password, String role) {
+    public User(UUID id, String username, String password, String role, boolean hashPassword) {
         this.id = id;
         this.username = username;
-        this.hashedPassword = hashPassword(password);
+        this.hashedPassword = hashPassword ? hashPassword(password) : password;
         this.role = role;
         this.assignedEvents = new ArrayList<>();
     }
@@ -26,12 +27,17 @@ public class User {
     }
 
     public boolean verifyPassword(String password) {
+        System.out.println("Entered Password: " + password);
+        System.out.println("Stored Hash: " + this.hashedPassword);
 
-        return BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword).verified;
+        boolean verified = BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword).verified;
+        System.out.println("Password Verification Result: " + verified);
+
+        return verified;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }

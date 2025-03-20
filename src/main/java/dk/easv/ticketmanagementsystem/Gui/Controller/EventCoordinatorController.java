@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class EventCoordinatorController {
     @FXML
@@ -142,7 +143,8 @@ public class EventCoordinatorController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return new Ticket(event, ticketTypeField.getText(), ticketModel.getTickets().size() + 1, customerNameField.getText());
+                UUID ticketId = UUID.randomUUID();  // Generate a new unique UUID
+                return new Ticket(ticketId, event, ticketTypeField.getText(), customerNameField.getText());
             }
             return null;
         });

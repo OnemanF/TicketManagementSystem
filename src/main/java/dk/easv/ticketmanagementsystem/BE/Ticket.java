@@ -1,23 +1,25 @@
 package dk.easv.ticketmanagementsystem.BE;
 
+import java.util.UUID;
+
 public class Ticket {
-    private int id;
+    private UUID id;
     private String customerName;
     private String ticketType;
     private Event event;
 
-    public Ticket(Event event, String ticketType, int id, String customerName) {
+    public Ticket(UUID id, Event event, String ticketType, String customerName) {
+        this.id = id;
         this.event = event;
         this.ticketType = ticketType;
-        this.id = id;
         this.customerName = customerName;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
