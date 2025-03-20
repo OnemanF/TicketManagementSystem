@@ -11,7 +11,7 @@ public class LoginModel {
 
     public boolean authenticate(String username, String password) {
         for (User user : userModel.getUsers()) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            if (user.getUsername().equals(username) && user.verifyPassword(password)) {
                 return true;
             }
         }

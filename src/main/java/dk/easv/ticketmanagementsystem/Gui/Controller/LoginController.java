@@ -1,6 +1,7 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BE.UserManager;
 import dk.easv.ticketmanagementsystem.Gui.Model.LoginModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,8 +34,7 @@ public class LoginController implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources){
-    }
+    public void initialize(URL location, ResourceBundle resources) {}
 
     private void loadDashboard(String fxmlFile) {
         try {
@@ -70,6 +70,15 @@ public class LoginController implements Initializable {
         } else {
             showError("Invalid credentials! Try again.");
         }
+    }
+
+    public void handleRegister(ActionEvent actionEvent) {
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        String role = "Event Coordinator"; // Change as needed
+
+        UserManager.getInstance().addUser(username, password, role);
+        showError("User registered successfully!");
     }
 }
 

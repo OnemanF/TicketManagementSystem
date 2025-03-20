@@ -17,7 +17,9 @@ public class UserManager {
         return users;
     }
 
-    public void addUser(User user) {
+    public void addUser(String username, String password, String role) {
+        int id = users.size() + 1;
+        User user = new User(id, username, password, role);
         users.add(user);
     }
 

@@ -4,61 +4,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 public class User {
     private int id;
     private String username;
-    private String password;
+    private String hashedPassword;
     private String role;
-    private List<Event> assignedEvents; // List of event names assigned to coordinators
+    private List<Event> assignedEvents;
 
     public User(int id, String username, String password, String role) {
         this.id = id;
         this.username = username;
-        this.password = password;
+        this.hashedPassword = hashPassword(password);
         this.role = role;
         this.assignedEvents = new ArrayList<>();
     }
 
-    public int getId() {
-        return id;
+    private String hashPassword(String password) {
+        return BCrypt.withDefaults().hashToString(12, password.toCharArray());
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public boolean verifyPassword(String password) {
+
+        return BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword).verified;
     }
 
-    public String getUsername() {
-        return username;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getHashedPassword() { return hashedPassword; }
+    public void setHashedPassword(String password) { this.hashedPassword = hashPassword(password); }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public List<Event> getAssignedEvents() {
-        return assignedEvents;
-    }
+    public List<Event> getAssignedEvents() { return assignedEvents; }
 
     public void assignEvent(Event event) {
         if (!assignedEvents.contains(event)) {
             this.assignedEvents.add(event);
-            event.addCoordinator(this);  // Ensure event also tracks assigned coordinators
+            event.addCoordinator(this);
         }
     }
 
@@ -70,6 +59,6 @@ public class User {
     public String toString() {
         return getUsername();
     }
-
 }
+
 

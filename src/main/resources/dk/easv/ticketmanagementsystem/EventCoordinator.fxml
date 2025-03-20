@@ -35,11 +35,12 @@
                     <ComboBox fx:id="cmbEventSelection" prefWidth="200.0" promptText="Select an Event" />
                     <Label fx:id="lblSelectedEvent" text="No event selected" />
                 </HBox>
-                <TableView fx:id="tblTickets" prefHeight="250" prefWidth="450">
+                <TableView fx:id="tblTickets" prefHeight="250" prefWidth="674.0">
                     <columns>
                         <TableColumn fx:id="colTicketID" prefWidth="100" text="Ticket ID" />
                         <TableColumn fx:id="colCustomerName" prefWidth="200" text="Customer Name" />
-                        <TableColumn fx:id="colTicketType" prefWidth="150" text="Ticket Type" />
+                  <TableColumn fx:id="colTicketType1" prefWidth="229.5999755859375" text="Email" />
+                        <TableColumn fx:id="colTicketType" prefWidth="143.99997558593748" text="Ticket Type" />
                     </columns>
                 </TableView>
                 <HBox spacing="10">

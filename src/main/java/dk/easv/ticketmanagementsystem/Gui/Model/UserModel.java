@@ -11,8 +11,10 @@ public class UserModel {
         return users;
     }
 
-    public void addUser(User user) {
-        users.add(user);
+    public void addUser(String username, String password, String role) {
+        int id = users.size() + 1; // Generate a simple unique ID
+        User newUser = new User(id, username, password, role);
+        users.add(newUser);
     }
 
     public void deleteUser(User user) {

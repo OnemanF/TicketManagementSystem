@@ -1,5 +1,6 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
@@ -56,7 +57,7 @@ public class UserManagementController {
     @FXML
     private void handleAddUser(ActionEvent event) {
         Optional<User> result = showUserDialog(null);
-        result.ifPresent(userModel::addUser);
+        result.ifPresent(user -> userModel.addUser(user.getUsername(), user.getHashedPassword(), user.getRole()));
     }
 
     private void loadEvents() {
@@ -189,7 +190,8 @@ public class UserManagementController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return new User(userModel.getUsers().size() + 1, usernameField.getText(), passwordField.getText(), roleBox.getValue());
+                String hashedPassword = BCrypt.withDefaults().hashToString(12, passwordField.getText().toCharArray());
+                return new User(userModel.getUsers().size() + 1, usernameField.getText(), hashedPassword, roleBox.getValue());
             }
             return null;
         });
