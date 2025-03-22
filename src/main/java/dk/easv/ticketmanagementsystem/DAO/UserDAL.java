@@ -50,12 +50,13 @@ public class UserDAL {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+
                     return new User(
                             UUID.fromString(rs.getString("id")),
                             rs.getString("username"),
-                            rs.getString("password"),  // Pass the hashed password
+                            rs.getString("password"),
                             rs.getString("role"),
-                            false  // Do not hash the password again
+                            false
                     );
                 }
             }

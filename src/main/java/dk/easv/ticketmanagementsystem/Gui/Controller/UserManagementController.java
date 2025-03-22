@@ -212,12 +212,9 @@ public class UserManagementController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                // Hash the password
-                String hashedPassword = BCrypt.withDefaults().hashToString(12, passwordField.getText().toCharArray());
                 UUID id = (user != null) ? user.getId() : UUID.randomUUID();
 
-                // Create the user without re-hashing the password
-                return new User(id, usernameField.getText(), hashedPassword, roleBox.getValue(), false);
+                return new User(id, usernameField.getText(), passwordField.getText(), roleBox.getValue(), true);
             }
             return null;
         });

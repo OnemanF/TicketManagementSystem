@@ -24,8 +24,7 @@ public class UserBLL {
             role = "Coordinator";
         }
 
-        String hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
-        User newUser = new User(UUID.randomUUID(), username, hashedPassword, role, false);
+        User newUser = new User(UUID.randomUUID(), username, password, role, true);
         userDAL.addUser(newUser);
     }
 
@@ -38,6 +37,7 @@ public class UserBLL {
         }
 
         System.out.println("Retrieved User: " + user.getUsername() + " | Stored Hash: " + user.getHashedPassword());
+        System.out.println("Entered Password: " + password);
 
         boolean isPasswordCorrect = user.verifyPassword(password);
 

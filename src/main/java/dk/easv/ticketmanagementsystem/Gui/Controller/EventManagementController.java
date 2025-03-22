@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.event.ActionEvent;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -55,6 +56,19 @@ public class EventManagementController {
 
     @FXML
     public void initialize() {
+        ImageView addIcon = new ImageView(getClass().getResource("/dk/easv/ticketmanagementsystem/Icons/add.png").toString());
+        addIcon.setFitWidth(24);
+        addIcon.setFitHeight(24);
+        btnAddEvent.setGraphic(addIcon);
+        ImageView editIcon = new ImageView(getClass().getResource("/dk/easv/ticketmanagementsystem/Icons/edit.png").toString());
+        editIcon.setFitWidth(24);
+        editIcon.setFitHeight(24);
+        btnEditEvent.setGraphic(editIcon);
+        ImageView deleteIcon = new ImageView(getClass().getResource("/dk/easv/ticketmanagementsystem/Icons/delete.png").toString());
+        deleteIcon.setFitWidth(24);
+        deleteIcon.setFitHeight(24);
+        btnDeleteEvent.setGraphic(deleteIcon);
+
         colEventName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));

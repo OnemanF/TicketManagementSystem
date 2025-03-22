@@ -16,7 +16,7 @@
         <VBox alignment="CENTER" layoutX="20" layoutY="20" spacing="20">
 
             <!-- Title -->
-            <Label style="-fx-font-size: 30px; -fx-font-weight: bold;" text="Event Coordinator Dashboard" />
+            <Label style="-fx-font-size: 30px; -fx-font-weight: bold;" text="Dashboard" />
 
             <!-- Handle Events Section -->
             <VBox spacing="10">
@@ -33,14 +33,13 @@
                 <Label style="-fx-font-size: 18px;" text="Manage Tickets" />
                 <HBox spacing="10">
                     <ComboBox fx:id="cmbEventSelection" prefWidth="200.0" promptText="Select an Event" />
-                    <Label fx:id="lblSelectedEvent" text="No event selected" />
                 </HBox>
                 <TableView fx:id="tblTickets" prefHeight="250" prefWidth="674.0">
                     <columns>
-                        <TableColumn fx:id="colTicketID" prefWidth="100" text="Ticket ID" />
-                        <TableColumn fx:id="colCustomerName" prefWidth="200" text="Customer Name" />
-                  <TableColumn fx:id="colTicketType1" prefWidth="229.5999755859375" text="Email" />
-                        <TableColumn fx:id="colTicketType" prefWidth="143.99997558593748" text="Ticket Type" />
+                        <TableColumn fx:id="colTicketID" prefWidth="100" style="-fx-background-color: #707e8a;" text="Ticket ID" />
+                        <TableColumn fx:id="colCustomerName" prefWidth="200" style="-fx-background-color: #707e8a;" text="Customer Name" />
+                  <TableColumn fx:id="colTicketType1" prefWidth="229.5999755859375" style="-fx-background-color: #707e8a;" text="Email" />
+                        <TableColumn fx:id="colTicketType" prefWidth="143.99997558593748" style="-fx-background-color: #707e8a;" text="Ticket Type" />
                     </columns>
                 </TableView>
                 <HBox spacing="10">
@@ -49,7 +48,7 @@
                 </HBox>
             </VBox>
 
-            <!-- Logout Button at the Bottom -->
+                  <!-- Logout Button at the Bottom -->
             <Button fx:id="btnLogout" onAction="#handleLogout" style="-fx-background-color: #C0392B;" text="Logout" />
         </VBox>
     </children>

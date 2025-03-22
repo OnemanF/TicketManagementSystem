@@ -27,13 +27,15 @@ public class User {
     }
 
     public boolean verifyPassword(String password) {
-        System.out.println("Entered Password: " + password);
-        System.out.println("Stored Hash: " + this.hashedPassword);
+        System.out.println("Password Verification Test...");
+        System.out.println("Input Password: '" + password + "'");
+        System.out.println("Stored Hash: '" + this.hashedPassword + "'");
 
-        boolean verified = BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword).verified;
-        System.out.println("Password Verification Result: " + verified);
+        // Correct BCrypt verification
+        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword);
+        System.out.println("Password Verification Result: " + result.verified);
 
-        return verified;
+        return result.verified;
     }
 
     public UUID getId() { return id; }
