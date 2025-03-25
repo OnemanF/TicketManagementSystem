@@ -10,31 +10,23 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="450.0" prefWidth="640.0" stylesheets="/dk/easv/ticketmanagementsystem/EventManagement.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventManagementController">
+<AnchorPane prefHeight="495.0" prefWidth="767.0" stylesheets="/dk/easv/ticketmanagementsystem/EventManagement.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventManagementController">
 
     <children>
-        <!-- Main Layout Container -->
-        <VBox alignment="CENTER" layoutX="10.0" layoutY="14.0" spacing="20">
-            <!-- Title -->
+        <VBox alignment="CENTER" layoutX="19.0" layoutY="14.0" prefHeight="462.0" prefWidth="729.0" spacing="20">
             <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Event Management" />
-
-            <!-- Table Section -->
-            <TableView fx:id="tblEvents" prefHeight="250.0" prefWidth="620.0">
+            <TableView fx:id="tblEvents" prefHeight="250.0" prefWidth="628.0">
                 <columns>
                     <TableColumn fx:id="colEventName" prefWidth="150" style="-fx-background-color: #707e8a;" text="Event Name" />
                     <TableColumn fx:id="colDate" prefWidth="80" style="-fx-background-color: #707e8a;" text="Date" />
                     <TableColumn fx:id="colStartTime" prefWidth="80" style="-fx-background-color: #707e8a;" text="Time" />
-                    <TableColumn fx:id="colLocation" prefWidth="120" style="-fx-background-color: #707e8a;" text="Location" />
-                    <TableColumn fx:id="colNotes" prefWidth="200.0" style="-fx-background-color: #707e8a;" text="Notes" />
+                    <TableColumn fx:id="colLocation" prefWidth="178.39999389648438" style="-fx-background-color: #707e8a;" text="Location" />
+                    <TableColumn fx:id="colNotes" prefWidth="239.99996337890627" style="-fx-background-color: #707e8a;" text="Notes" />
                 </columns>
             </TableView>
-
-            <!-- Coordinator Selection -->
             <HBox spacing="10">
                 <ComboBox fx:id="cmbCoordinators" prefWidth="200" promptText="Assign Coordinator" />
             </HBox>
-
-            <!-- Button Section -->
             <HBox spacing="10">
                 <Button fx:id="btnAddEvent" onAction="#handleAddEvent" />
                 <Button fx:id="btnEditEvent" onAction="#handleEditEvent" />

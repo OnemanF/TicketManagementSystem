@@ -39,6 +39,10 @@ public class UserBLL {
         System.out.println("Retrieved User: " + user.getUsername() + " | Stored Hash: " + user.getHashedPassword());
         System.out.println("Entered Password: " + password);
 
+        String passwordToVerify = password.trim();
+        String hashedPassword = BCrypt.withDefaults().hashToString(12, passwordToVerify.toCharArray());
+        System.out.println("Manual Hash: " + hashedPassword);
+
         boolean isPasswordCorrect = user.verifyPassword(password);
 
         if (isPasswordCorrect) {

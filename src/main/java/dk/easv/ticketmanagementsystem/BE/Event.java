@@ -3,25 +3,23 @@ package dk.easv.ticketmanagementsystem.BE;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Event {
-    private UUID id;
+    private final UUID id;
     private String name;
     private LocalDateTime startTime;
     private String location;
     private String notes;
-    private List<User> assignedCoordinators; // Stores users assigned to this event
+    private final List<User> assignedCoordinators;
 
-    public Event(UUID  id, String name, LocalDateTime startTime, String location, String notes) {
-        this.id = id;
-        this.name = name;
-        this.startTime = startTime;
-        this.location = location;
-        this.notes = notes;
+    public Event(UUID id, String name, LocalDateTime startTime, String location, String notes) {
+        this.id = Objects.requireNonNull(id, "ID cannot be null");
+        this.name = Objects.requireNonNull(name, "Name cannot be null");
+        this.startTime = Objects.requireNonNull(startTime, "Start time cannot be null");
+        this.location = Objects.requireNonNull(location, "Location cannot be null");
+        this.notes = notes != null ? notes : "";
         this.assignedCoordinators = new ArrayList<>();
     }
 
@@ -29,40 +27,20 @@ public class Event {
         return notes;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public LocalDate getDate() {
@@ -74,22 +52,54 @@ public class Event {
     }
 
     public List<User> getAssignedCoordinators() {
-        return assignedCoordinators;
+        return Collections.unmodifiableList(assignedCoordinators);
     }
 
     public void addCoordinator(User user) {
-        if (!assignedCoordinators.contains(user)) {
-            this.assignedCoordinators.add(user);
+        if (user != null && !assignedCoordinators.contains(user)) {
+            assignedCoordinators.add(user);
             user.assignEvent(this);
         }
     }
 
     public String getCoordinatorsString() {
-        return assignedCoordinators.stream().map(User::getUsername).collect(Collectors.joining(", "));
+        return assignedCoordinators.stream()
+                .map(User::getUsername)
+                .collect(Collectors.joining(", "));
+    }
+
+    public void setName(String name) {
+        this.name = Objects.requireNonNull(name, "Name cannot be null");
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = Objects.requireNonNull(startTime, "Start time cannot be null");
+    }
+
+    public void setLocation(String location) {
+        this.location = Objects.requireNonNull(location, "Location cannot be null");
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes != null ? notes : "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Event)) return false;
+        Event event = (Event) o;
+        return id.equals(event.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return name;
+        //return String.format("%s (%s)", name, getStartTime().toString());
     }
 }

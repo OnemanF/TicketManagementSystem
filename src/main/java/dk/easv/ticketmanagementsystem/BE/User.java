@@ -27,12 +27,16 @@ public class User {
     }
 
     public boolean verifyPassword(String password) {
-        System.out.println("Password Verification Test...");
-        System.out.println("Input Password: '" + password + "'");
-        System.out.println("Stored Hash: '" + this.hashedPassword + "'");
+        if (password == null || password.isEmpty()) {
+            System.out.println("Password is null or empty.");
+            return false;
+        }
 
-        // Correct BCrypt verification
-        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword);
+        System.out.println("Password Verification Test...");
+        System.out.println("Input Password: '" + password.trim() + "'");
+        System.out.println("Stored Hash: '" + this.hashedPassword.trim() + "'");
+
+        BCrypt.Result result = BCrypt.verifyer().verify(password.trim().toCharArray(), this.hashedPassword.trim());
         System.out.println("Password Verification Result: " + result.verified);
 
         return result.verified;

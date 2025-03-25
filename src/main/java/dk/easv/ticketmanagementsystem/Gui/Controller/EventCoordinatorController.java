@@ -1,11 +1,11 @@
 package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import dk.easv.ticketmanagementsystem.BE.*;
+import dk.easv.ticketmanagementsystem.BLL.EventBLL;
 import dk.easv.ticketmanagementsystem.Gui.Model.EventModel;
 import dk.easv.ticketmanagementsystem.Gui.Model.TicketModel;
+import dk.easv.ticketmanagementsystem.Interface.IEventService;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -19,8 +19,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +32,8 @@ public class EventCoordinatorController {
     @FXML
     private TableColumn<Ticket, String> colTicketType;
     @FXML
+    private TableColumn<Ticket, String> colTicketEmail;
+    @FXML
     private Button btnAddTicket, btnDeleteTicket;
     @FXML
     private Button btnViewEvents, btnCreateEvent, btnAssignCoordinators, btnLogout;
@@ -46,9 +46,13 @@ public class EventCoordinatorController {
 
     private EventModel eventModel;
 
-    public EventCoordinatorController(){
+    public EventCoordinatorController() {
         this.ticketModel = new TicketModel();
-        this.eventModel = new EventModel();
+    }
+
+    public void setEventModel(EventModel eventModel) {
+        this.eventModel = eventModel;
+        loadAssignedEvents();
     }
 
     @FXML
@@ -56,16 +60,25 @@ public class EventCoordinatorController {
         colTicketID.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         colTicketType.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
+        colTicketEmail.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
 
         tblTickets.setItems(ticketModel.getTickets());
 
-        loadAssignedEvents();
-        setupEventSelectionListener();
+        if (eventModel == null){
+            IEventService eventService = new EventBLL();
+            eventModel = new EventModel(eventService);
+        }
+
+            loadAssignedEvents();
+            setupEventSelectionListener();
     }
 
+
     private void loadAssignedEvents() {
-        eventModel.loadAssignedEvents(getCurrentUser());
-        cmbEventSelection.setItems(eventModel.getAssignedEvents());
+        if (eventModel != null) {
+            eventModel.loadEvents();
+            cmbEventSelection.setItems(eventModel.getEvents());
+        }
     }
 
     private User getCurrentUser() {
@@ -76,13 +89,10 @@ public class EventCoordinatorController {
         cmbEventSelection.getSelectionModel().selectedItemProperty().addListener((obs, oldEvent, newEvent) -> {
             if (newEvent != null) {
                 SelectedEventManager.getInstance().setSelectedEvent(newEvent);
-                lblSelectedEvent.setText("Selected Event: " + newEvent.getName());
                 ticketModel.loadTicketsForEvent(newEvent);
             }
         });
     }
-
-
 
     @FXML
     private void handleViewEvents(ActionEvent event) {
@@ -130,21 +140,23 @@ public class EventCoordinatorController {
         grid.setPadding(new Insets(20));
 
         TextField customerNameField = new TextField();
+        TextField customerEmailField = new TextField();
         TextField ticketTypeField = new TextField();
 
         grid.add(new Label("Customer Name:"), 0, 0);
         grid.add(customerNameField, 1, 0);
-        grid.add(new Label("Ticket Type:"), 0, 1);
-        grid.add(ticketTypeField, 1, 1);
+        grid.add(new Label("Email:"), 0, 1);
+        grid.add(customerEmailField, 1, 1);
+        grid.add(new Label("Ticket Type:"), 0, 2);
+        grid.add(ticketTypeField, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
-
         Platform.runLater(customerNameField::requestFocus);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                UUID ticketId = UUID.randomUUID();  // Generate a new unique UUID
-                return new Ticket(ticketId, event, ticketTypeField.getText(), customerNameField.getText());
+                UUID ticketId = UUID.randomUUID();
+                return new Ticket(ticketId, event, ticketTypeField.getText(), customerNameField.getText(), customerEmailField.getText());
             }
             return null;
         });
@@ -159,7 +171,6 @@ public class EventCoordinatorController {
             EventManager.getInstance().setSelectedEvent(selectedEvent);
         }
     }
-
 
     private Event getSelectedEvent() {
         return SelectedEventManager.getInstance().getSelectedEvent();
@@ -198,6 +209,5 @@ public class EventCoordinatorController {
     private void showAlert(String message) {
         new Alert(Alert.AlertType.ERROR, message).show();
     }
-
 }
 

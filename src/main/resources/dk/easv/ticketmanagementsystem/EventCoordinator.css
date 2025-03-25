@@ -3,20 +3,18 @@ AnchorPane {
     -fx-padding: 20px;
 }
 
-
 Label {
     -fx-text-fill: white;
     -fx-font-family: "Arial";
     -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
-
 Label {
-    -fx-font-size: 32px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #ECF0F1;
 }
-
 
 Label {
     -fx-font-size: 18px;
@@ -24,7 +22,6 @@ Label {
     -fx-padding: 5px 0;
     -fx-text-fill: #BDC3C7;
 }
-
 
 .button {
     -fx-background-color: #34495E;
@@ -41,11 +38,9 @@ Label {
     -fx-background-color: #1F2D3D;
 }
 
-
 .button:pressed {
     -fx-background-color: #17212B;
 }
-
 
 #btnLogout {
     -fx-background-color: #C0392B;
@@ -54,17 +49,19 @@ Label {
     -fx-background-color: #A93226;
 }
 
-
 TableView {
-    -fx-background-color: #ECF0F1;
+    -fx-background-color: #34495E;
+    -fx-border-color: #BDC3C7;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
 TableColumn {
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
     -fx-alignment: CENTER;
 }
 
-#colTicketID, #colCustomerName, #colTicketType1, #colTicketType {
+#colTicketID, #colCustomerName, #colTicketEmail, #colTicketType {
     -fx-background-color: transparent;
     -fx-text-fill: white;
 }

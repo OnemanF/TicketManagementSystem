@@ -16,7 +16,6 @@ Label {
     -fx-text-fill: #ECF0F1;
 }
 
-
 .button {
     -fx-background-color: #3A3F44;
     -fx-text-fill: white;
@@ -46,14 +45,14 @@ Label {
     -fx-background-color: #3A3F44;
 }
 
-/* Table Styling */
-TableView {
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-    -fx-border-color: #BDC3C7;
-    -fx-background-color: #34495E;
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
 
 TableColumn {
     -fx-font-size: 14px;
@@ -65,3 +64,17 @@ TableColumn {
     -fx-background-color: transparent;
     -fx-text-fill: white;
 }
+
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-cell {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar {
+    -fx-opacity: 0;
+}
+
