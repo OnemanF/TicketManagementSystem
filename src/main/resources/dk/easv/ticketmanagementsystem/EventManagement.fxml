@@ -21,11 +21,12 @@
                     <TableColumn fx:id="colDate" prefWidth="80" style="-fx-background-color: #707e8a;" text="Date" />
                     <TableColumn fx:id="colStartTime" prefWidth="80" style="-fx-background-color: #707e8a;" text="Time" />
                     <TableColumn fx:id="colLocation" prefWidth="178.39999389648438" style="-fx-background-color: #707e8a;" text="Location" />
-                    <TableColumn fx:id="colNotes" prefWidth="239.99996337890627" style="-fx-background-color: #707e8a;" text="Notes" />
+                    <TableColumn fx:id="colNotes" prefWidth="265" style="-fx-background-color: #707e8a;" text="Notes" />
                 </columns>
             </TableView>
             <HBox spacing="10">
-                <ComboBox fx:id="cmbCoordinators" prefWidth="200" promptText="Assign Coordinator" />
+                <ComboBox fx:id="cmbCoordinators" prefWidth="200" promptText="Coordinator" />
+            <Button fx:id="btnAssignCoordinatorToMyEvent" mnemonicParsing="false" onAction="#handleAssignCoordinator" text="Assign Coordinator" />
             </HBox>
             <HBox spacing="10">
                 <Button fx:id="btnAddEvent" onAction="#handleAddEvent" />

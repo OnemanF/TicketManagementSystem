@@ -2,11 +2,13 @@ package dk.easv.ticketmanagementsystem.Gui.Model;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BE.UserManager;
 import dk.easv.ticketmanagementsystem.BLL.UserBLL;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 public class UserModel {
@@ -15,7 +17,7 @@ public class UserModel {
 
     public UserModel() {
         this.userBLL = new UserBLL();
-        loadUsersFromDatabase(); // Load existing users when the model is created
+        loadUsersFromDatabase();
     }
 
     public ObservableList<User> getUsers() {
@@ -25,7 +27,7 @@ public class UserModel {
     public void addUser(String username, String password, String role) {
         try {
             userBLL.registerUser(username, password, role);
-            users.setAll(userBLL.getAllUsers()); // Reload users from database
+            users.setAll(userBLL.getAllUsers());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -41,7 +43,9 @@ public class UserModel {
 
     private void loadUsersFromDatabase() {
         try {
-            users.addAll(userBLL.getAllUsers());
+            List<User> loadedUsers = userBLL.getAllUsers();
+            users.setAll(loadedUsers);
+            UserManager.getInstance().getUsers().setAll(loadedUsers);
         } catch (SQLException e) {
             e.printStackTrace();
         }

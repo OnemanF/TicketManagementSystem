@@ -2,17 +2,22 @@ package dk.easv.ticketmanagementsystem.Gui.Model;
 
 import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BLL.EventBLL;
 import dk.easv.ticketmanagementsystem.Interface.IEventService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.List;
 
 public class EventModel {
     private final ObservableList<Event> events = FXCollections.observableArrayList();
     private final ObservableList<Event> assignedEvents = FXCollections.observableArrayList();
     private final IEventService eventService;
+    private final EventBLL eventBLL;
 
     public EventModel(IEventService eventService) {
         this.eventService = eventService;
+        this.eventBLL = new EventBLL();
         loadEvents();
     }
 
@@ -35,12 +40,28 @@ public class EventModel {
     }
 
     public void assignEventToCoordinator(User coordinator, Event event) {
-        eventService.assignCoordinator(event, coordinator);
+        eventBLL.assignCoordinator(event.getId(), coordinator.getId());
+
+        loadAssignedCoordinators(event);
+
         if (!assignedEvents.contains(event)) {
             assignedEvents.add(event);
         }
         event.addCoordinator(coordinator);
+        loadAssignedEvents(coordinator);
     }
+
+    public void loadAssignedEvents(User coordinator) {
+        assignedEvents.clear();
+        List<Event> assignedEventsList = eventBLL.getAssignedEvents(coordinator.getId());
+        assignedEvents.addAll(assignedEventsList);
+    }
+
+    public void loadAssignedCoordinators(Event event) {
+        List<User> coordinators = eventBLL.getAssignedCoordinators(event);
+        event.setCoordinators(coordinators);
+    }
+
 
     public void loadEvents() {
         events.clear();
@@ -53,15 +74,6 @@ public class EventModel {
             if (events.get(i).getId().equals(updatedEvent.getId())) {
                 events.set(i, updatedEvent);
                 break;
-            }
-        }
-    }
-
-    public void loadAssignedEvents(User coordinator) {
-        assignedEvents.clear();
-        for (Event event : events) {
-            if (event.getAssignedCoordinators().contains(coordinator)) {
-                assignedEvents.add(event);
             }
         }
     }

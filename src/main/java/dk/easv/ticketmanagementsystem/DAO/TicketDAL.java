@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,13 +36,22 @@ public class TicketDAL {
             stmt.setObject(1, eventId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    tickets.add(new Ticket(
+                    Event event = new Event(
+                            eventId,
+                            "Event Name Placeholder",
+                            LocalDateTime.now(),
+                            "Placeholder Location",
+                            "Placeholder Notes"
+                    );
+
+                    Ticket ticket = new Ticket(
                             UUID.fromString(rs.getString("id")),
-                            null,  // Event can be set externally
+                            event,
                             rs.getString("ticket_type"),
                             rs.getString("customer_name"),
                             rs.getString("customer_email")
-                    ));
+                    );
+                    tickets.add(ticket);
                 }
             }
         }
@@ -57,4 +67,5 @@ public class TicketDAL {
             stmt.executeUpdate();
         }
     }
+
 }

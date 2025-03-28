@@ -5,8 +5,10 @@ import dk.easv.ticketmanagementsystem.BE.User;
 import dk.easv.ticketmanagementsystem.BE.UserManager;
 import dk.easv.ticketmanagementsystem.BLL.EventBLL;
 import dk.easv.ticketmanagementsystem.Gui.Model.EventModel;
+import dk.easv.ticketmanagementsystem.Gui.Model.UserModel;
 import dk.easv.ticketmanagementsystem.Interface.IEventService;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -26,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,10 +47,12 @@ public class EventManagementController {
     private AnchorPane anchorPane;
 
     private final EventModel eventModel;
+    private UserModel userModel;
 
     public EventManagementController() {
         IEventService eventService = new EventBLL();
         this.eventModel = new EventModel(eventService);
+        this.userModel = new UserModel();
     }
 
     @FXML
@@ -56,6 +61,10 @@ public class EventManagementController {
         setupTable();
         setupEventListeners();
         loadAvailableCoordinators();
+
+        cmbCoordinators.setOnMouseClicked(event -> loadAvailableCoordinators());
+
+        btnAssignCoordinatorToMyEvent.setOnAction(this::handleAssignCoordinator);
     }
 
     private void setupIcons() {
@@ -242,7 +251,44 @@ public class EventManagementController {
     }
 
     private void loadAvailableCoordinators() {
-        cmbCoordinators.setItems(UserManager.getInstance().getCoordinators());
+        try {
+            List<User> coordinators = UserManager.getInstance().getCoordinators();
+            cmbCoordinators.setItems(FXCollections.observableArrayList(coordinators));
+        } catch (Exception e) {
+            showAlert("Error loading coordinators.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAssignCoordinator(ActionEvent event) {
+        Event selectedEvent = tblEvents.getSelectionModel().getSelectedItem();
+
+        if (selectedEvent == null) {
+            showAlert("Please select an event.");
+            return;
+        }
+
+        loadAvailableCoordinators();
+
+        User selectedCoordinator = cmbCoordinators.getSelectionModel().getSelectedItem();
+
+        if (selectedCoordinator == null) {
+            showAlert("Please select a coordinator.");
+            return;
+        }
+
+        try {
+            eventModel.assignEventToCoordinator(selectedCoordinator, selectedEvent);
+
+            eventModel.loadAssignedEvents(selectedCoordinator);
+
+            showAlert("Coordinator assigned successfully!");
+            tblEvents.refresh();
+        } catch (Exception e) {
+            showAlert("Error assigning coordinator.");
+            e.printStackTrace();
+        }
     }
 
     private void showAlert(String message) {

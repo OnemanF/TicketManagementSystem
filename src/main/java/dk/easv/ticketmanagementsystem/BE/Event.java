@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Event {
     private final UUID id;
@@ -12,35 +11,26 @@ public class Event {
     private LocalDateTime startTime;
     private String location;
     private String notes;
-    private final List<User> assignedCoordinators;
+    private final List<User> assignedCoordinators  = new ArrayList<>();
 
     public Event(UUID id, String name, LocalDateTime startTime, String location, String notes) {
         this.id = Objects.requireNonNull(id, "ID cannot be null");
         this.name = Objects.requireNonNull(name, "Name cannot be null");
         this.startTime = Objects.requireNonNull(startTime, "Start time cannot be null");
         this.location = Objects.requireNonNull(location, "Location cannot be null");
-        this.notes = notes != null ? notes : "";
-        this.assignedCoordinators = new ArrayList<>();
+        this.notes = (notes != null) ? notes : "";
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public UUID getId() {
-        return id;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public LocalDate getDate() {
@@ -51,21 +41,16 @@ public class Event {
         return startTime.toLocalTime();
     }
 
-    public List<User> getAssignedCoordinators() {
-        return Collections.unmodifiableList(assignedCoordinators);
+    public String getLocation() {
+        return location;
     }
 
-    public void addCoordinator(User user) {
-        if (user != null && !assignedCoordinators.contains(user)) {
-            assignedCoordinators.add(user);
-            user.assignEvent(this);
-        }
+    public String getNotes() {
+        return notes;
     }
 
-    public String getCoordinatorsString() {
-        return assignedCoordinators.stream()
-                .map(User::getUsername)
-                .collect(Collectors.joining(", "));
+    public List<User> getCoordinators() {
+        return Collections.unmodifiableList(assignedCoordinators );
     }
 
     public void setName(String name) {
@@ -81,14 +66,20 @@ public class Event {
     }
 
     public void setNotes(String notes) {
-        this.notes = notes != null ? notes : "";
+        this.notes = (notes != null) ? notes : "";
+    }
+
+    public void addCoordinator(User coordinator) {
+        if (coordinator != null && !assignedCoordinators.contains(coordinator)) {
+            assignedCoordinators.add(coordinator);
+        }
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Event)) return false;
-        Event event = (Event) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Event)) return false;
+        Event event = (Event) obj;
         return id.equals(event.id);
     }
 
@@ -100,6 +91,15 @@ public class Event {
     @Override
     public String toString() {
         return name;
-        //return String.format("%s (%s)", name, getStartTime().toString());
     }
+
+    public void setCoordinators(List<User> coordinators) {
+        assignedCoordinators.clear();
+        assignedCoordinators.addAll(coordinators);
+    }
+
+    public List<User> getAssignedCoordinators() {
+        return Collections.unmodifiableList(assignedCoordinators);
+    }
+
 }

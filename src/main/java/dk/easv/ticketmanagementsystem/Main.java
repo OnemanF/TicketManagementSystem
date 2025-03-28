@@ -10,7 +10,7 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/dk/easv/ticketmanagementsystem/EventCoordinator.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/dk/easv/ticketmanagementsystem/Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("EASV");
         stage.setScene(scene);

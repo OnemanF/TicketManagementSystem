@@ -15,9 +15,9 @@ public class UserDAL {
         String query = "INSERT INTO Users (id, username, password, role) VALUES (?, ?, ?, ?)";
         try (Connection con = DBConnector.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
-            stmt.setObject(1, user.getId());  // UUID
+            stmt.setObject(1, user.getId());
             stmt.setString(2, user.getUsername());
-            stmt.setString(3, user.getHashedPassword());  // Store hashed password
+            stmt.setString(3, user.getHashedPassword());
             stmt.setString(4, user.getRole());
             stmt.executeUpdate();
         }
@@ -43,6 +43,25 @@ public class UserDAL {
         return users;
     }
 
+    public List<User> getCoordinators() throws SQLException {
+        List<User> coordinators = new ArrayList<>();
+        String query = "SELECT * FROM Users WHERE role = 'Coordinator'";
+        try (Connection con = DBConnector.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                coordinators.add(new User(
+                        UUID.fromString(rs.getString("id")),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        false
+                ));
+            }
+        }
+        return coordinators;
+    }
+
     public User getUserByUsername(String username) throws SQLException {
         String query = "SELECT * FROM Users WHERE username = ?";
         try (Connection con = DBConnector.getConnection();
@@ -64,7 +83,6 @@ public class UserDAL {
         return null;
     }
 
-    // **NEW METHOD: Update user information in the database**
     public void updateUser(User user) throws SQLException {
         String query = "UPDATE Users SET username = ?, role = ? WHERE id = ?";
         try (Connection con = DBConnector.getConnection();
@@ -76,7 +94,6 @@ public class UserDAL {
         }
     }
 
-    // **NEW METHOD: Delete user from the database**
     public void deleteUser(User user) throws SQLException {
         String query = "DELETE FROM Users WHERE id = ?";
         try (Connection con = DBConnector.getConnection();

@@ -11,5 +11,6 @@ public interface IEventService {
     void createEvent(Event event);
     void updateEvent(Event event);
     void deleteEvent(UUID eventId);
-    void assignCoordinator(Event event, User coordinator);
+    void assignCoordinator(UUID eventId, UUID coordinatorId);
+    List<User> getAssignedCoordinators(Event event);
 }

@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EventCoordinatorController {
     @FXML
@@ -39,8 +41,6 @@ public class EventCoordinatorController {
     private Button btnViewEvents, btnCreateEvent, btnAssignCoordinators, btnLogout;
     @FXML
     private ComboBox<Event> cmbEventSelection;
-    @FXML
-    private Label lblSelectedEvent;
 
     private TicketModel ticketModel;
 
@@ -178,30 +178,26 @@ public class EventCoordinatorController {
 
     @FXML
     private void handleDeleteTicket(ActionEvent event) {
-        Ticket selectedTicket = tblTickets.getSelectionModel().getSelectedItem();
-        if (selectedTicket != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this ticket?", ButtonType.YES, ButtonType.NO);
-            alert.setTitle("Confirm Deletion");
-            alert.setHeaderText(null);
+            Ticket selectedTicket = tblTickets.getSelectionModel().getSelectedItem();
 
-            alert.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.YES) {
-                    ticketModel.deleteTicket(selectedTicket);
-                }
-            });
-        }
+            if (selectedTicket == null) {
+                System.out.println("Error: No ticket selected.");
+                return;
+            }
+
+            ticketModel.deleteTicket(selectedTicket);
+
     }
 
     private void loadScene(String fxml) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/ticketmanagementsystem/" + fxml));
             Parent root = loader.load();
-
             Stage stage = (Stage) tblTickets.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(EventCoordinatorController.class.getName()).log(Level.SEVERE, "Error loading " + fxml, e);
             showAlert("Error loading " + fxml);
         }
     }

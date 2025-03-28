@@ -2,6 +2,7 @@ package dk.easv.ticketmanagementsystem.BLL;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BE.UserManager;
 import dk.easv.ticketmanagementsystem.DAO.UserDAL;
 
 import java.sql.SQLException;
@@ -24,7 +25,9 @@ public class UserBLL {
             role = "Coordinator";
         }
 
-        User newUser = new User(UUID.randomUUID(), username, password, role, true);
+        String hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
+
+        User newUser = new User(UUID.randomUUID(), username, hashedPassword, role, true);
         userDAL.addUser(newUser);
     }
 
@@ -36,27 +39,17 @@ public class UserBLL {
             return null;
         }
 
-        System.out.println("Retrieved User: " + user.getUsername() + " | Stored Hash: " + user.getHashedPassword());
-        System.out.println("Entered Password: " + password);
-
-        String passwordToVerify = password.trim();
-        String hashedPassword = BCrypt.withDefaults().hashToString(12, passwordToVerify.toCharArray());
-        System.out.println("Manual Hash: " + hashedPassword);
-
-        boolean isPasswordCorrect = user.verifyPassword(password);
-
-        if (isPasswordCorrect) {
-            System.out.println("Password matched for user: " + username);
+        if (user.verifyPassword(password)) {
             return user;
         } else {
-            System.out.println("Password verification failed for user: " + username);
+            return null;
         }
-
-        return null;
     }
 
     public List<User> getAllUsers() throws SQLException {
-        return userDAL.getAllUsers();
+        List<User> users = userDAL.getAllUsers();
+        UserManager.getInstance().getUsers().setAll(users);
+        return users;
     }
 
     public void updateUser(User user) throws SQLException {
@@ -69,4 +62,9 @@ public class UserBLL {
     public void deleteUser(User user) throws SQLException {
         userDAL.deleteUser(user);
     }
+
+    public List<User> getCoordinators() throws SQLException {
+        return userDAL.getCoordinators();
+    }
+
 }

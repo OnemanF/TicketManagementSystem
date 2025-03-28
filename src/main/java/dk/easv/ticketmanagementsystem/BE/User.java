@@ -12,12 +12,13 @@ public class User {
     private String username;
     private String hashedPassword;
     private String role;
+    private boolean isActive;
     private List<Event> assignedEvents;
 
-    public User(UUID id, String username, String password, String role, boolean hashPassword) {
+    public User(UUID id, String username, String hashedPassword, String role, boolean isActive) {
         this.id = id;
         this.username = username;
-        this.hashedPassword = hashPassword ? hashPassword(password) : password;
+        this.hashedPassword = hashedPassword;
         this.role = role;
         this.assignedEvents = new ArrayList<>();
     }
@@ -28,20 +29,10 @@ public class User {
 
     public boolean verifyPassword(String password) {
         if (password == null || password.isEmpty()) {
-            System.out.println("Password is null or empty.");
             return false;
         }
-
-        System.out.println("Password Verification Test...");
-        System.out.println("Input Password: '" + password.trim() + "'");
-        System.out.println("Stored Hash: '" + this.hashedPassword.trim() + "'");
-
-        BCrypt.Result result = BCrypt.verifyer().verify(password.trim().toCharArray(), this.hashedPassword.trim());
-        System.out.println("Password Verification Result: " + result.verified);
-
-        return result.verified;
+        return BCrypt.verifyer().verify(password.toCharArray(), this.hashedPassword).verified;
     }
-
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
 
@@ -49,7 +40,14 @@ public class User {
     public void setUsername(String username) { this.username = username; }
 
     public String getHashedPassword() { return hashedPassword; }
-    public void setHashedPassword(String password) { this.hashedPassword = hashPassword(password); }
+    public void setHashedPassword(String password) {
+
+        if (password != null && !password.startsWith("$2a$")) {
+            this.hashedPassword = hashPassword(password);
+        } else {
+            this.hashedPassword = password;
+        }
+    }
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }

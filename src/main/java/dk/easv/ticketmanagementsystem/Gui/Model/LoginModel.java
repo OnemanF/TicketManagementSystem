@@ -12,15 +12,6 @@ public class LoginModel {
         this.userBLL = new UserBLL();
     }
 
-    public boolean authenticate(String username, String password) {
-        try {
-            return userBLL.authenticateUser(username, password) != null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public User getAuthenticatedUser(String username, String password) {
         try {
             return userBLL.authenticateUser(username, password); // Pass actual password

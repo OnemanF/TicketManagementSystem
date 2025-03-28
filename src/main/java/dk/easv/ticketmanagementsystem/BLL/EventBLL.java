@@ -6,6 +6,7 @@ import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.Interface.IEventService;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,11 +50,30 @@ public class EventBLL implements IEventService {
     }
 
     @Override
-    public void assignCoordinator(Event event, User coordinator) {
+    public void assignCoordinator(UUID eventId, UUID coordinatorId) {
         try {
-            eventDAL.assignCoordinator(event, coordinator);
+            eventDAL.assignCoordinator(eventId, coordinatorId);
         } catch (SQLException e) {
-            throw new RuntimeException("Error assigning coordinator", e);
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<User> getAssignedCoordinators(Event event) {
+        try {
+            return eventDAL.getAssignedCoordinators(event.getId());
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching assigned coordinators", e);
+        }
+    }
+
+    public List<Event> getAssignedEvents(UUID coordinatorId) {
+        try {
+            return eventDAL.getAssignedEvents(coordinatorId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
 }
+

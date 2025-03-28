@@ -5,14 +5,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class UserManager {
     private static final UserManager instance = new UserManager();
     private final ObservableList<User> users = FXCollections.observableArrayList();
-    private final UserBLL userBLL = new UserBLL();
+    private final UserBLL userBLL;
 
-    private UserManager() {}
+    private UserManager() {
+        this.userBLL = new UserBLL();
+    }
 
     public static UserManager getInstance() {
         return instance;
@@ -22,14 +26,13 @@ public class UserManager {
         return users;
     }
 
-    public void addUser(String username, String password, String role) throws SQLException {
-        userBLL.registerUser(username, password, role);
-        User user = new User(UUID.randomUUID(), username, password, role, true);
-        users.add(user);
-    }
-
-    public ObservableList<User> getCoordinators() {
-        return users.filtered(user -> "Coordinator".equalsIgnoreCase(user.getRole()));
+    public List<User> getCoordinators() {
+        try {
+            return userBLL.getCoordinators();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 }
 

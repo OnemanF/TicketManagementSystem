@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class EventManager {
-    private static final EventManager instance = new EventManager();
+    private static EventManager instance = null;
     private final ObservableList<Event> events = FXCollections.observableArrayList();
     private final ObservableList<Event> assignedEvents = FXCollections.observableArrayList();
     private Event selectedEvent;
@@ -12,6 +12,9 @@ public class EventManager {
     private EventManager() {}
 
     public static EventManager getInstance() {
+        if (instance == null) {
+            instance = new EventManager();
+        }
         return instance;
     }
 
@@ -33,14 +36,5 @@ public class EventManager {
 
     public void setSelectedEvent(Event event) {
         this.selectedEvent = event;
-    }
-
-    public void loadAssignedEvents(User coordinator) {
-        assignedEvents.clear();
-        for (Event event : events) {
-            if (event.getAssignedCoordinators().contains(coordinator)) {
-                assignedEvents.add(event);
-            }
-        }
     }
 }

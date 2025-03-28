@@ -5,6 +5,7 @@ import dk.easv.ticketmanagementsystem.Gui.Model.LoginModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -39,16 +40,15 @@ public class LoginController implements Initializable {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
 
-
-        User user = loginModel. getAuthenticatedUser(username, password);
+        User user = loginModel.getAuthenticatedUser(username, password);
 
         if (user != null) {
             switch (user.getRole().toLowerCase()) {
                 case "admin":
-                    loadDashboard("UserManagement.fxml");
+                    loadDashboard("UserManagement.fxml", actionEvent);
                     break;
-                case "event coordinator":
-                    loadDashboard("EventManagement.fxml");
+                case "coordinator":
+                    loadDashboard("EventCoordinator.fxml", actionEvent);
                     break;
                 default:
                     showError("Role not recognized.");
@@ -59,16 +59,28 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void loadDashboard(String fxmlFile) {
+    private void loadDashboard(String fxmlFile, ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            String resourcePath = "/dk/easv/ticketmanagementsystem/" + fxmlFile;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+
+            if (loader.getLocation() == null) {
+                throw new IllegalStateException("FXML file not found at: " + resourcePath);
+            }
+
             Parent root = loader.load();
 
-            Stage stage = (Stage) btnLogin.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.show();
-        } catch (IOException e) {
-            showError("Failed to load dashboard.");
+
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.close();
+
+        } catch (IOException | IllegalStateException e) {
+            e.printStackTrace();
+            showError("Failed to load dashboard: " + e.getMessage());
         }
     }
 
