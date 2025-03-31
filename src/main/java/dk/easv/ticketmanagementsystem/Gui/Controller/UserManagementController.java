@@ -4,15 +4,15 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.EventManager;
 import dk.easv.ticketmanagementsystem.BE.User;
+import dk.easv.ticketmanagementsystem.BLL.EventBLL;
 import dk.easv.ticketmanagementsystem.BLL.UserBLL;
+import dk.easv.ticketmanagementsystem.Gui.Model.EventModel;
 import dk.easv.ticketmanagementsystem.Gui.Model.UserModel;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,28 +43,27 @@ public class UserManagementController {
     private Button btnAddUser, btnEditUser, btnDeleteUser, btnAssignEventToCoordinator, btnLogout;
 
     private UserBLL userBLL;
-    private UserModel userModel;
-    private ObservableList<User> users = FXCollections.observableArrayList();
+    private final UserModel userModel = UserModel.getInstance();
+    private EventModel eventModel;
+    private final EventBLL eventBLL = new EventBLL();
 
     public UserManagementController() {
         this.userBLL = new UserBLL();
-        this.userModel = new UserModel();
+        this.eventModel = new EventModel(new EventBLL());
     }
 
     @FXML
     public void initialize() {
         colUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
-        colAssignedEvents.setCellValueFactory(new PropertyValueFactory<>("assignedEvents"));
+        colAssignedEvents.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getAssignedEventsString()));
 
-        try {
-            users.addAll(userBLL.getAllUsers()); // Load users from database
-            tblUsers.setItems(users);
-        } catch (SQLException e) {
-            showAlert("Error", "Failed to load users from database!", Alert.AlertType.ERROR);
-        }
+        tblUsers.setItems(userModel.getUsers());
 
-        loadEvents();
+        cmbEvents.setItems(eventModel.getAllEvents());
+
+        userModel.loadUsersFromDatabase();
     }
 
     @FXML
@@ -72,17 +72,12 @@ public class UserManagementController {
         result.ifPresent(user -> {
             try {
                 userModel.addUser(user.getUsername(), user.getHashedPassword(), user.getRole());
-                users.setAll(userModel.getUsers()); // Refresh UI
                 showAlert("Success", "User added successfully!", Alert.AlertType.INFORMATION);
-            } catch (Exception e) { // Catch generic exception
+            } catch (Exception e) {
                 showAlert("Error", "Error saving user to database!", Alert.AlertType.ERROR);
                 e.printStackTrace();
             }
         });
-    }
-
-    private void loadEvents() {
-        cmbEvents.setItems(EventManager.getInstance().getEvents());
     }
 
     @FXML
@@ -110,7 +105,11 @@ public class UserManagementController {
             result.ifPresent(updatedUser -> {
                 try {
                     userBLL.updateUser(updatedUser);
-                    users.set(users.indexOf(selectedUser), updatedUser); // Refresh UI
+                    int index = userModel.getUsers().indexOf(selectedUser);
+                    if (index != -1) {
+                        userModel.getUsers().set(index, updatedUser);
+                    }
+                    tblUsers.refresh();
                     showAlert("Success", "User updated successfully!", Alert.AlertType.INFORMATION);
                 } catch (SQLException e) {
                     showAlert("Error", "Error updating user!", Alert.AlertType.ERROR);
@@ -134,7 +133,7 @@ public class UserManagementController {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     userBLL.deleteUser(selectedUser);
-                    users.remove(selectedUser); // Remove from UI
+                    userModel.getUsers().remove(selectedUser); // ✅ Correctly updates UI
                     showAlert("Success", "User deleted successfully!", Alert.AlertType.INFORMATION);
                 } catch (SQLException e) {
                     showAlert("Error", "Error deleting user!", Alert.AlertType.ERROR);
@@ -154,28 +153,36 @@ public class UserManagementController {
     }
 
     @FXML
-    private void handleAssignEvent(ActionEvent event) {
-        Event selectedEvent = cmbEvents.getSelectionModel().getSelectedItem();
-        if (selectedEvent == null) {
-            showAlert("Warning", "Please select an event.", Alert.AlertType.WARNING);
-            return;
-        }
+    private void handleAssignEvent() {
+        try {
+            User selectedUser = tblUsers.getSelectionModel().getSelectedItem();
+            Event selectedEvent = cmbEvents.getSelectionModel().getSelectedItem();
 
-        User selectedUser = tblUsers.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
-            showAlert("Warning", "Please select a user.", Alert.AlertType.WARNING);
-            return;
-        }
+            if (selectedUser == null || selectedEvent == null) {
+                throw new IllegalArgumentException("Please select a coordinator and an event!");
+            }
 
-        if (!"Coordinator".equalsIgnoreCase(selectedUser.getRole())) {
-            showAlert("Warning", "Only Coordinators can be assigned to events.", Alert.AlertType.WARNING);
-            return;
-        }
+            if (!"coordinator".equalsIgnoreCase(selectedUser.getRole())) {
+                throw new IllegalArgumentException("Only coordinators can be assigned events!");
+            }
 
-        selectedUser.assignEvent(selectedEvent);
-        tblUsers.refresh();
-        showAlert("Success", "User " + selectedUser.getUsername() + " assigned to event " + selectedEvent.getName(), Alert.AlertType.INFORMATION);
+            eventBLL.assignCoordinator(selectedEvent.getId(), selectedUser.getId());
+
+            userModel.updateAssignedEvents(selectedUser);
+            tblUsers.refresh();
+
+        } catch (IllegalArgumentException e) {
+            handleException("Input Error", e.getMessage(), Alert.AlertType.WARNING);
+        } catch (Exception e) {
+            handleException("Unexpected Error", "An unexpected error occurred.", Alert.AlertType.ERROR);
+        }
     }
+
+    private void handleException(String title, String message, Alert.AlertType alertType) {
+        showAlert(title, message, alertType);
+        System.err.println("ERROR: " + message);
+    }
+
 
     private Optional<User> showUserDialog(User user) {
         Dialog<User> dialog = new Dialog<>();

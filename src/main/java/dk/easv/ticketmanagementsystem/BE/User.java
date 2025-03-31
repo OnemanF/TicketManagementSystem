@@ -54,15 +54,13 @@ public class User {
 
     public List<Event> getAssignedEvents() { return assignedEvents; }
 
-    public void assignEvent(Event event) {
-        if (!assignedEvents.contains(event)) {
-            this.assignedEvents.add(event);
-            event.addCoordinator(this);
-        }
-    }
-
     public String getAssignedEventsString() {
-        return assignedEvents.stream().map(Event::getName).collect(Collectors.joining(", "));
+        if (assignedEvents.isEmpty()) {
+            return "No Events";
+        }
+        return assignedEvents.stream()
+                .map(Event::getName)
+                .collect(Collectors.joining(", "));
     }
 
     @Override

@@ -3,11 +3,12 @@ package dk.easv.ticketmanagementsystem.Gui.Model;
 import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.User;
 import dk.easv.ticketmanagementsystem.BLL.EventBLL;
+import dk.easv.ticketmanagementsystem.BLL.UserBLL;
 import dk.easv.ticketmanagementsystem.Interface.IEventService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.List;
+import java.sql.SQLException;
 
 public class EventModel {
     private final ObservableList<Event> events = FXCollections.observableArrayList();
@@ -21,12 +22,12 @@ public class EventModel {
         loadEvents();
     }
 
-    public ObservableList<Event> getEvents() {
+    public ObservableList<Event> getAllEvents() {
         return events;
     }
 
-    public ObservableList<Event> getAssignedEvents() {
-        return assignedEvents;
+    public ObservableList<Event> getEvents() {
+        return events;
     }
 
     public void addEvent(Event event) {
@@ -41,32 +42,33 @@ public class EventModel {
 
     public void assignEventToCoordinator(User coordinator, Event event) {
         eventBLL.assignCoordinator(event.getId(), coordinator.getId());
-
-        loadAssignedCoordinators(event);
-
-        if (!assignedEvents.contains(event)) {
-            assignedEvents.add(event);
-        }
-        event.addCoordinator(coordinator);
         loadAssignedEvents(coordinator);
     }
 
     public void loadAssignedEvents(User coordinator) {
         assignedEvents.clear();
-        List<Event> assignedEventsList = eventBLL.getAssignedEvents(coordinator.getId());
-        assignedEvents.addAll(assignedEventsList);
+        assignedEvents.addAll(eventBLL.getAssignedEvents(coordinator.getId()));
     }
 
-    public void loadAssignedCoordinators(Event event) {
-        List<User> coordinators = eventBLL.getAssignedCoordinators(event);
-        event.setCoordinators(coordinators);
+    public boolean isCoordinatorAssigned(User coordinator, Event event) {
+        try {
+            return eventBLL.isCoordinatorAssigned(event.getId(), coordinator.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-
 
     public void loadEvents() {
         events.clear();
         events.addAll(eventService.getAllEvents());
+
+        System.out.println("Loaded events: " + events.size());
+        for (Event e : events) {
+            System.out.println("Event: " + e.getName());
+        }
     }
+
     public void updateEvent(Event updatedEvent) {
         eventService.updateEvent(updatedEvent);
 

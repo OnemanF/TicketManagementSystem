@@ -2,6 +2,8 @@ package dk.easv.ticketmanagementsystem.Gui.Controller;
 
 import dk.easv.ticketmanagementsystem.BE.User;
 import dk.easv.ticketmanagementsystem.Gui.Model.LoginModel;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,24 +42,41 @@ public class LoginController implements Initializable {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
 
-        User user = loginModel.getAuthenticatedUser(username, password);
-
-        if (user != null) {
-            switch (user.getRole().toLowerCase()) {
-                case "admin":
-                    loadDashboard("UserManagement.fxml", actionEvent);
-                    break;
-                case "coordinator":
-                    loadDashboard("EventCoordinator.fxml", actionEvent);
-                    break;
-                default:
-                    showError("Role not recognized.");
-                    break;
+        Task<User> loginTask = new Task<>() {
+            @Override
+            protected User call() {
+                return loginModel.getAuthenticatedUser(username, password);
             }
-        } else {
-            showError("Invalid credentials! Try again.");
-        }
+        };
+
+        loginTask.setOnSucceeded(event -> {
+            User user = loginTask.getValue();
+            if (user != null) {
+                Platform.runLater(() -> {
+                    switch (user.getRole().toLowerCase()) {
+                        case "admin":
+                            loadDashboard("UserManagement.fxml", actionEvent);
+                            break;
+                        case "coordinator":
+                            loadDashboard("EventCoordinator.fxml", actionEvent);
+                            break;
+                        default:
+                            showError("Role not recognized.");
+                            break;
+                    }
+                });
+            } else {
+                showError("Invalid credentials! Try again.");
+            }
+        });
+
+        loginTask.setOnFailed(event -> {
+            Platform.runLater(() -> showError("An error occurred during login."));
+        });
+
+        new Thread(loginTask).start();
     }
+
 
     private void loadDashboard(String fxmlFile, ActionEvent actionEvent) {
         try {

@@ -1,19 +1,24 @@
 package dk.easv.ticketmanagementsystem.BLL;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import dk.easv.ticketmanagementsystem.BE.Event;
 import dk.easv.ticketmanagementsystem.BE.User;
 import dk.easv.ticketmanagementsystem.BE.UserManager;
+import dk.easv.ticketmanagementsystem.DAO.EventDAL;
 import dk.easv.ticketmanagementsystem.DAO.UserDAL;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class UserBLL {
     private final UserDAL userDAL;
+    private final EventDAL eventDAL;
 
     public UserBLL() {
         this.userDAL = new UserDAL();
+        this.eventDAL = new EventDAL();
     }
 
     public void registerUser(String username, String password, String role) throws SQLException {
@@ -29,6 +34,10 @@ public class UserBLL {
 
         User newUser = new User(UUID.randomUUID(), username, hashedPassword, role, true);
         userDAL.addUser(newUser);
+    }
+
+    public User getUserByUsername(String username) throws SQLException {
+        return userDAL.getUserByUsername(username);
     }
 
     public User authenticateUser(String username, String password) throws SQLException {
@@ -67,4 +76,12 @@ public class UserBLL {
         return userDAL.getCoordinators();
     }
 
+    public List<Event> getAssignedEvents(UUID userId) {
+        try {
+            return eventDAL.getAssignedEvents(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 }

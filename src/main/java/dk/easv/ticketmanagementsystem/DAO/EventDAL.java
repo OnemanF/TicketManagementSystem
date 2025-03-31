@@ -81,24 +81,23 @@ public class EventDAL {
 
     public List<Event> getAssignedEvents(UUID coordinatorId) throws SQLException {
         List<Event> events = new ArrayList<>();
-        String query = "SELECT e.id, e.name, e.date, e.location, e.description " +
-                "FROM Events e " +
+        String query = "SELECT e.* FROM Events e " +
                 "JOIN Event_Coordinators ec ON e.id = ec.event_id " +
                 "WHERE ec.coordinator_id = ?";
 
         try (Connection con = DBConnector.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setObject(1, coordinatorId);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                events.add(new Event(
-                        UUID.fromString(rs.getString("id")),
-                        rs.getString("name"),
-                        rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getString("location"),
-                        rs.getString("description")
-                ));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    events.add(new Event(
+                            UUID.fromString(rs.getString("id")),
+                            rs.getString("name"),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getString("location"),
+                            rs.getString("description")
+                    ));
+                }
             }
         }
         return events;
@@ -106,7 +105,7 @@ public class EventDAL {
 
     public List<User> getAssignedCoordinators(UUID eventId) throws SQLException {
         List<User> coordinators = new ArrayList<>();
-        String query = "SELECT u.id, u.username, u.hashed_password, u.role FROM Users u " +
+        String query = "SELECT u.id, u.username, u.password, u.role FROM Users u " +
                 "JOIN Event_Coordinators ec ON u.id = ec.coordinator_id " +
                 "WHERE ec.event_id = ?";
 
@@ -119,7 +118,7 @@ public class EventDAL {
                 User coordinator = new User(
                         UUID.fromString(rs.getString("id")),
                         rs.getString("username"),
-                        rs.getString("hashed_password"),
+                        rs.getString("password"),
                         rs.getString("role"),
                         false
                 );
@@ -127,6 +126,20 @@ public class EventDAL {
             }
         }
         return coordinators;
+    }
+
+    public boolean isCoordinatorAssigned(UUID eventId, UUID coordinatorId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Event_Coordinators WHERE event_id = ? AND coordinator_id = ?";
+        try (Connection conn = DBConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setObject(1, eventId);
+            stmt.setObject(2, coordinatorId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // If count > 0, coordinator is already assigned
+            }
+        }
+        return false;
     }
 
     }

@@ -9,6 +9,7 @@ import dk.easv.ticketmanagementsystem.Gui.Model.UserModel;
 import dk.easv.ticketmanagementsystem.Interface.IEventService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -47,12 +48,11 @@ public class EventManagementController {
     private AnchorPane anchorPane;
 
     private final EventModel eventModel;
-    private UserModel userModel;
+
 
     public EventManagementController() {
         IEventService eventService = new EventBLL();
         this.eventModel = new EventModel(eventService);
-        this.userModel = new UserModel();
     }
 
     @FXML
@@ -62,7 +62,11 @@ public class EventManagementController {
         setupEventListeners();
         loadAvailableCoordinators();
 
-        cmbCoordinators.setOnMouseClicked(event -> loadAvailableCoordinators());
+        cmbCoordinators.setOnMouseClicked(event -> {
+            if (cmbCoordinators.getItems().isEmpty()) {
+                loadAvailableCoordinators();
+            }
+        });
 
         btnAssignCoordinatorToMyEvent.setOnAction(this::handleAssignCoordinator);
     }
@@ -87,7 +91,10 @@ public class EventManagementController {
         colStartTime.setCellValueFactory(new PropertyValueFactory<>("time"));
         colNotes.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
-        tblEvents.setItems(eventModel.getEvents());
+        new Thread(() -> {
+            ObservableList<Event> events = eventModel.getEvents();
+            Platform.runLater(() -> tblEvents.setItems(events));
+        }).start();
     }
 
     private void setupEventListeners() {
@@ -251,44 +258,69 @@ public class EventManagementController {
     }
 
     private void loadAvailableCoordinators() {
-        try {
+        new Thread(() -> {
             List<User> coordinators = UserManager.getInstance().getCoordinators();
-            cmbCoordinators.setItems(FXCollections.observableArrayList(coordinators));
-        } catch (Exception e) {
-            showAlert("Error loading coordinators.");
-            e.printStackTrace();
-        }
+            Platform.runLater(() -> {
+                if (coordinators.isEmpty()) {
+                    showAlert("No coordinators found.");
+                } else {
+                    cmbCoordinators.setItems(FXCollections.observableArrayList(coordinators));
+                }
+            });
+        }).start();
     }
 
     @FXML
     private void handleAssignCoordinator(ActionEvent event) {
         Event selectedEvent = tblEvents.getSelectionModel().getSelectedItem();
-
         if (selectedEvent == null) {
-            showAlert("Please select an event.");
+            showWarning("Selection Error", "Please select an event.");
             return;
         }
 
-        loadAvailableCoordinators();
-
         User selectedCoordinator = cmbCoordinators.getSelectionModel().getSelectedItem();
-
         if (selectedCoordinator == null) {
-            showAlert("Please select a coordinator.");
+            showWarning("Selection Error", "Please select a coordinator.");
             return;
         }
 
         try {
+            if (eventModel.isCoordinatorAssigned(selectedCoordinator, selectedEvent)) {
+                showWarning("Assignment Error", "This coordinator is already assigned to this event.");
+                return;
+            }
             eventModel.assignEventToCoordinator(selectedCoordinator, selectedEvent);
-
-            eventModel.loadAssignedEvents(selectedCoordinator);
-
-            showAlert("Coordinator assigned successfully!");
             tblEvents.refresh();
+            showInfo("Success", "Coordinator assigned successfully!");
+
         } catch (Exception e) {
-            showAlert("Error assigning coordinator.");
+            showError("Error", "Error assigning coordinator.");
             e.printStackTrace();
         }
+    }
+
+    private void showWarning(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void showAlert(String message) {

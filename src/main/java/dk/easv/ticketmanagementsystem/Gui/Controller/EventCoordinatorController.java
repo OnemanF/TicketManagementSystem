@@ -81,10 +81,6 @@ public class EventCoordinatorController {
         }
     }
 
-    private User getCurrentUser() {
-        return UserManager.getInstance().getUsers().stream().findFirst().orElse(null);
-    }
-
     private void setupEventSelectionListener() {
         cmbEventSelection.getSelectionModel().selectedItemProperty().addListener((obs, oldEvent, newEvent) -> {
             if (newEvent != null) {
@@ -162,18 +158,6 @@ public class EventCoordinatorController {
         });
 
         return dialog.showAndWait();
-    }
-
-    @FXML
-    private void handleEventSelection() {
-        Event selectedEvent = cmbEventSelection.getSelectionModel().getSelectedItem();
-        if (selectedEvent != null) {
-            EventManager.getInstance().setSelectedEvent(selectedEvent);
-        }
-    }
-
-    private Event getSelectedEvent() {
-        return SelectedEventManager.getInstance().getSelectedEvent();
     }
 
     @FXML

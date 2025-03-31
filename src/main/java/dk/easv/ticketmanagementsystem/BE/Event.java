@@ -94,12 +94,8 @@ public class Event {
     }
 
     public void setCoordinators(List<User> coordinators) {
-        assignedCoordinators.clear();
-        assignedCoordinators.addAll(coordinators);
     }
 
-    public List<User> getAssignedCoordinators() {
-        return Collections.unmodifiableList(assignedCoordinators);
-    }
+
 
 }
