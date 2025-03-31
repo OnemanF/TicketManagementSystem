@@ -29,28 +29,27 @@ public class TicketDAL {
 
     public List<Ticket> getTicketsByEvent(UUID eventId) throws SQLException {
         List<Ticket> tickets = new ArrayList<>();
-        String query = "SELECT id, customer_name, customer_email, ticket_type FROM Tickets WHERE event_id = ?";
+        String query = "SELECT id, customer_name, customer_email, ticket_type, event_id FROM Tickets WHERE event_id = ? OR event_id IS NULL";
 
         try (Connection con = DBConnector.getConnection();
              PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setObject(1, eventId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Event event = new Event(
-                            eventId,
-                            "Event Name Placeholder",
-                            LocalDateTime.now(),
-                            "Placeholder Location",
-                            "Placeholder Notes"
-                    );
+                    UUID ticketId = UUID.fromString(rs.getString("id"));
+                    String ticketType = rs.getString("ticket_type");
+                    String customerName = rs.getString("customer_name");
+                    String customerEmail = rs.getString("customer_email");
+                    UUID eventUUID = rs.getObject("event_id", UUID.class);
 
-                    Ticket ticket = new Ticket(
-                            UUID.fromString(rs.getString("id")),
-                            event,
-                            rs.getString("ticket_type"),
-                            rs.getString("customer_name"),
-                            rs.getString("customer_email")
-                    );
+                    Event event = (eventUUID != null) ? new Event(
+                            eventUUID, "Event Name Placeholder",
+                            LocalDateTime.now(), "Placeholder Location",
+                            "Placeholder Notes"
+                    ) : null;
+
+                    boolean isSpecialTicket = (eventUUID == null);
+                    Ticket ticket = new Ticket(ticketId, event, ticketType, customerName, customerEmail, isSpecialTicket);
                     tickets.add(ticket);
                 }
             }

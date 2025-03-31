@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -137,14 +138,31 @@ public class EventCoordinatorController {
 
         TextField customerNameField = new TextField();
         TextField customerEmailField = new TextField();
-        TextField ticketTypeField = new TextField();
+
+        ComboBox<String> cmbTicketType = new ComboBox<>();
+        cmbTicketType.setEditable(true);
+        cmbTicketType.getItems().addAll("VIP", "Food Included", "Front Row", "Free Beer", "Standard");
+
+        CheckBox chkSpecialTicket = new CheckBox("Special Food/Drink Ticket");
+        ComboBox<String> cmbSpecialTicketType = new ComboBox<>();
+        cmbSpecialTicketType.getItems().addAll("One Free Beer", "50% Off One Drink", "1 Set of Free Earplugs");
+        cmbSpecialTicketType.setDisable(true);
+
+        chkSpecialTicket.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            cmbSpecialTicketType.setDisable(!newVal);
+            customerNameField.setDisable(newVal);
+            customerEmailField.setDisable(newVal);
+            cmbTicketType.setDisable(newVal);
+        });
 
         grid.add(new Label("Customer Name:"), 0, 0);
         grid.add(customerNameField, 1, 0);
         grid.add(new Label("Email:"), 0, 1);
         grid.add(customerEmailField, 1, 1);
         grid.add(new Label("Ticket Type:"), 0, 2);
-        grid.add(ticketTypeField, 1, 2);
+        grid.add(cmbTicketType, 1, 2);
+        grid.add(chkSpecialTicket, 0, 3);
+        grid.add(cmbSpecialTicketType, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
         Platform.runLater(customerNameField::requestFocus);
@@ -152,7 +170,9 @@ public class EventCoordinatorController {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
                 UUID ticketId = UUID.randomUUID();
-                return new Ticket(ticketId, event, ticketTypeField.getText(), customerNameField.getText(), customerEmailField.getText());
+                boolean isSpecial = chkSpecialTicket.isSelected();
+                String ticketType = isSpecial ? cmbSpecialTicketType.getValue() : cmbTicketType.getValue();
+                return new Ticket(ticketId, event, ticketType, customerNameField.getText(), customerEmailField.getText(), isSpecial);
             }
             return null;
         });

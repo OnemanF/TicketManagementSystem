@@ -4,18 +4,27 @@ import java.util.UUID;
 
 public class Ticket {
     private UUID id;
+    private Event event;
+    private String ticketType;
     private String customerName;
     private String customerEmail;
-    private String ticketType;
-    private Event event;
+    private boolean isSpecialTicket;
+    private String qrCode;
 
-    public Ticket(UUID id, Event event, String ticketType, String customerName, String customerEmail) {
+    public Ticket(UUID id, Event event, String ticketType, String customerName, String customerEmail, boolean isSpecialTicket) {
         this.id = id;
         this.event = event;
         this.ticketType = ticketType;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
+        this.isSpecialTicket = isSpecialTicket;
+        this.qrCode = generateUniqueCode();
     }
+
+    private String generateUniqueCode() {
+        return UUID.randomUUID().toString();
+    }
+
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
