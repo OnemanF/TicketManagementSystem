@@ -193,6 +193,16 @@ public class EventCoordinatorController {
 
     }
 
+    @FXML
+    private void handlePrintTicket(ActionEvent event) {
+        Ticket selectedTicket = tblTickets.getSelectionModel().getSelectedItem();
+        if (selectedTicket != null) {
+            TicketPrinter.printTicket(selectedTicket);
+        } else {
+            showAlert("Please select a ticket to print.");
+        }
+    }
+
     private void loadScene(String fxml) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dk/easv/ticketmanagementsystem/" + fxml));
