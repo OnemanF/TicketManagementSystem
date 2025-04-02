@@ -6,35 +6,85 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="495.0" prefWidth="767.0" stylesheets="/dk/easv/ticketmanagementsystem/EventManagement.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventManagementController">
+<AnchorPane prefHeight="495.0" prefWidth="767.0" stylesheets="@EventManagement.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventManagementController">
 
     <children>
-        <VBox alignment="CENTER" layoutX="19.0" layoutY="14.0" prefHeight="462.0" prefWidth="729.0" spacing="20">
-            <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Event Management" />
-            <TableView fx:id="tblEvents" prefHeight="250.0" prefWidth="628.0">
+        <!-- Header Section -->
+        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" spacing="15">
+            <!-- Logo -->
+            <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+                <image>
+                    <Image url="@/dk/easv/ticketmanagementsystem/Icons/images.png" />
+                </image>
+            </ImageView>
+
+            <!-- Title -->
+            <Label styleClass="header-label-dark" text="Event Management" />
+        </HBox>
+
+        <!-- Main Layout -->
+        <VBox alignment="CENTER" layoutX="19.0" layoutY="80.0" prefHeight="462.0" prefWidth="729.0" spacing="20">
+            <TableView fx:id="tblEvents" prefHeight="250.0" prefWidth="628.0" styleClass="table-view">
                 <columns>
-                    <TableColumn fx:id="colEventName" prefWidth="150" style="-fx-background-color: #707e8a;" text="Event Name" />
-                    <TableColumn fx:id="colDate" prefWidth="80" style="-fx-background-color: #707e8a;" text="Date" />
-                    <TableColumn fx:id="colStartTime" prefWidth="80" style="-fx-background-color: #707e8a;" text="Time" />
-                    <TableColumn fx:id="colLocation" prefWidth="178.39999389648438" style="-fx-background-color: #707e8a;" text="Location" />
-                    <TableColumn fx:id="colNotes" prefWidth="265" style="-fx-background-color: #707e8a;" text="Notes" />
+                    <TableColumn fx:id="colEventName" prefWidth="150" styleClass="table-header" text="Event Name" />
+                    <TableColumn fx:id="colDate" prefWidth="80" styleClass="table-header" text="Date" />
+                    <TableColumn fx:id="colStartTime" prefWidth="80" styleClass="table-header" text="Time" />
+                    <TableColumn fx:id="colLocation" prefWidth="178.4" styleClass="table-header" text="Location" />
+                    <TableColumn fx:id="colNotes" prefWidth="265" styleClass="table-header" text="Notes" />
                 </columns>
             </TableView>
+
+            <!-- Coordinator Dropdown -->
             <HBox spacing="10">
-                <ComboBox fx:id="cmbCoordinators" prefWidth="200" promptText="Coordinator" />
-            <Button fx:id="btnAssignCoordinatorToMyEvent" mnemonicParsing="false" onAction="#handleAssignCoordinator" text="Assign Coordinator" />
+                <ComboBox fx:id="cmbCoordinators" prefWidth="200" promptText="Coordinator" styleClass="custom-combobox" />
+                <Button fx:id="btnAssignCoordinatorToMyEvent" mnemonicParsing="false" onAction="#handleAssignCoordinator" styleClass="button" text="Assign Coordinator" />
             </HBox>
+
+            <!-- Buttons with Icons -->
             <HBox spacing="10">
-                <Button fx:id="btnAddEvent" onAction="#handleAddEvent" />
-                <Button fx:id="btnEditEvent" onAction="#handleEditEvent" />
-                <Button fx:id="btnDeleteEvent" onAction="#handleDeleteEvent" />
-                <Button fx:id="btnBackToDashboard" onAction="#handleBackToDashboard" text="Back to Dashboard">
+                <!-- Add Event Button -->
+                <Button fx:id="btnAddEvent" onAction="#handleAddEvent" styleClass="button">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                            <image>
+                                <Image url="@/dk/easv/ticketmanagementsystem/Icons/add.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <!-- Edit Event Button -->
+                <Button fx:id="btnEditEvent" onAction="#handleEditEvent" styleClass="button">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                            <image>
+                                <Image url="@/dk/easv/ticketmanagementsystem/Icons/edit.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <!-- Delete Event Button -->
+                <Button fx:id="btnDeleteEvent" onAction="#handleDeleteEvent" styleClass="button">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                            <image>
+                                <Image url="@/dk/easv/ticketmanagementsystem/Icons/delete.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <!-- Back to Dashboard Button (Styled same as other buttons, aligned right) -->
+                <Button fx:id="btnBackToDashboard" layoutX="550.0" layoutY="420.0" onAction="#handleBackToDashboard" styleClass="button" text="Back to Dashboard">
                <HBox.margin>
-                  <Insets left="250.0" />
+                  <Insets left="370.0" />
                </HBox.margin></Button>
             </HBox>
         </VBox>

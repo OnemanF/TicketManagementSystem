@@ -1,19 +1,7 @@
-AnchorPane {
+
+.anchor-pane {
     -fx-background-color: #2C3E50;
     -fx-padding: 20px;
-}
-
-Label {
-    -fx-text-fill: white;
-    -fx-font-family: "Arial";
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-Label {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #ECF0F1;
 }
 
 Label {
@@ -24,7 +12,7 @@ Label {
 }
 
 .button {
-    -fx-background-color: #34495E;
+    -fx-background-color: #555555;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -35,35 +23,77 @@ Label {
 }
 
 .button:hover {
-    -fx-background-color: #1F2D3D;
+    -fx-background-color: #666666;
 }
 
 .button:pressed {
-    -fx-background-color: #17212B;
+    -fx-background-color: #444444;
 }
 
 #btnLogout {
-    -fx-background-color: #C0392B;
-}
-#btnLogout:hover {
-    -fx-background-color: #A93226;
+    -fx-background-color: #555555;
 }
 
-TableView {
-    -fx-background-color: #34495E;
+#btnLogout:hover {
+    -fx-background-color: #666666;
+}
+
+.table-view {
+    -fx-background-color: white;
     -fx-border-color: #BDC3C7;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
-}
-TableColumn {
-    -fx-font-size: 14px;
-    -fx-font-weight: normal;
-    -fx-alignment: CENTER;
+    -fx-padding: 10px;
 }
 
-#colTicketID, #colCustomerName, #colTicketEmail, #colTicketType {
-    -fx-background-color: transparent;
+.table-view .column-header-background {
+    -fx-background-color: #4A4F55 !important;
+}
+
+.table-view .column-header {
+    -fx-background-color: #4A4F55 !important;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-header {
+    -fx-background-color: #4A4F55;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.table-view .table-cell {
     -fx-text-fill: white;
 }
 
+.custom-combobox {
+    -fx-background-color: #444;
+    -fx-text-fill: white;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #666;
+    -fx-border-width: 1px;
+    -fx-padding: 6px;
+}
 
+.custom-combobox .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #444;
+}
+
+.custom-combobox .list-cell:hover {
+    -fx-background-color: #666;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #666;
+    -fx-border-radius: 6px;
+}
+
+.combo-box .arrow-button:hover {
+    -fx-background-color: #777;
+}

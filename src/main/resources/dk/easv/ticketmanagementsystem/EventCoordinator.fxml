@@ -10,38 +10,49 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
 <AnchorPane prefHeight="545.0" prefWidth="726.0" stylesheets="/dk/easv/ticketmanagementsystem/EventCoordinator.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.EventCoordinatorController">
 
     <children>
-        <VBox alignment="CENTER" layoutX="20" layoutY="20" spacing="20">
+        <HBox layoutX="20" layoutY="20" spacing="10" alignment="CENTER_LEFT">
+            <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+                <image>
+                    <Image url="@/dk/easv/ticketmanagementsystem/Icons/images.png" />
+                </image>
+            </ImageView>
             <Label style="-fx-font-size: 30px; -fx-font-weight: bold;" text="Dashboard" />
+        </HBox>
+
+        <VBox alignment="CENTER" layoutX="20" layoutY="80" spacing="20">
             <VBox spacing="10">
                 <HBox spacing="10">
-                    <Button fx:id="btnViewEvents" onAction="#handleViewEvents" text="View My Events" />
-                    <Button fx:id="btnCreateEvent" onAction="#handleCreateEvent" text="Create Event" />
-                    <Button fx:id="btnAssignCoordinators" onAction="#handleAssignCoordinators" text="Assign Coordinators" />
+                    <Button fx:id="btnViewEvents" onAction="#handleViewEvents" styleClass="button" text="View My Events" />
+                    <Button fx:id="btnCreateEvent" onAction="#handleCreateEvent" styleClass="button" text="Create Event" />
+                    <Button fx:id="btnAssignCoordinators" onAction="#handleAssignCoordinators" styleClass="button" text="Assign Coordinators" />
                 </HBox>
             </VBox>
             <VBox spacing="10">
                 <HBox spacing="10">
-                    <ComboBox fx:id="cmbEventSelection" prefWidth="200.0" promptText="Select an Event" />
+                    <ComboBox fx:id="cmbEventSelection" prefWidth="200.0" promptText="Select an Event" styleClass="custom-combobox" />
                 </HBox>
-                <TableView fx:id="tblTickets" prefHeight="250" prefWidth="674.0">
+                <TableView fx:id="tblTickets" prefHeight="250" prefWidth="674.0" styleClass="table-view">
                     <columns>
-                        <TableColumn fx:id="colTicketID" prefWidth="100" style="-fx-background-color: #707e8a;" text="Ticket ID" />
-                        <TableColumn fx:id="colCustomerName" prefWidth="200" style="-fx-background-color: #707e8a;" text="Customer Name" />
-                  <TableColumn fx:id="colTicketEmail" prefWidth="229.5999755859375" style="-fx-background-color: #707e8a;" text="Email" />
-                        <TableColumn fx:id="colTicketType" prefWidth="210" style="-fx-background-color: #707e8a;" text="Ticket Type" />
+                        <TableColumn fx:id="colTicketID" prefWidth="100" styleClass="table-header" text="Ticket ID" />
+                        <TableColumn fx:id="colCustomerName" prefWidth="200" styleClass="table-header" text="Customer Name" />
+                        <TableColumn fx:id="colTicketEmail" prefWidth="191.20001220703125" styleClass="table-header" text="Email" />
+                        <TableColumn fx:id="colTicketType" prefWidth="181.60001220703123" styleClass="table-header" text="Ticket Type" />
                     </columns>
                 </TableView>
                 <HBox spacing="10">
-                    <Button fx:id="btnAddTicket" onAction="#handleAddTicket" text="Add Ticket" />
-                    <Button fx:id="btnDeleteTicket" onAction="#handleDeleteTicket" text="Delete Ticket" />
-                  <Button fx:id="btnLogout" onAction="#handleLogout" style="-fx-background-color: #C0392B;" text="Logout">
-                  <HBox.margin>
-                     <Insets left="420.0" />
-                  </HBox.margin>
-               </Button>
+                    <Button fx:id="btnAddTicket" onAction="#handleAddTicket" styleClass="button" text="Add Ticket" />
+                    <Button fx:id="btnDeleteTicket" onAction="#handleDeleteTicket" styleClass="button" text="Delete Ticket" />
+                    <Button id="btnLogout" fx:id="btnLogout" onAction="#handleLogout" styleClass="button" text="Logout">
+                        <HBox.margin>
+                            <Insets left="370.0" />
+                        </HBox.margin>
+                    </Button>
                 </HBox>
             </VBox>
         </VBox>

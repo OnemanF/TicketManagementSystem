@@ -1,25 +1,19 @@
 
 AnchorPane {
-    -fx-background-color: #2C3E50;
+    -fx-background-color: white;
     -fx-padding: 20px;
 }
 
 Label {
-    -fx-text-fill: white;
+    -fx-text-fill: black !important;
     -fx-font-family: "Arial";
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-Label{
     -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-text-fill: #ECF0F1;
 }
 
 .text-field, .password-field {
-    -fx-background-color: #34495E;
-    -fx-text-fill: white;
+    -fx-background-color: white;
+    -fx-text-fill: black;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-padding: 5px;

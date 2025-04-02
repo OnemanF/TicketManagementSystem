@@ -1,80 +1,100 @@
-AnchorPane {
-    -fx-background-color: #2C3E50;
+
+.anchor-pane {
+    -fx-background-color: linear-gradient(to right, #2C3E50, #3A3F44);
     -fx-padding: 20px;
 }
 
-Label {
-    -fx-text-fill: white;
-    -fx-font-family: "Arial";
-    -fx-font-size: 16px;
+.header-label-dark {
+    -fx-text-fill: #3e3b3b;
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
+    -fx-font-family: "Arial";
 }
 
-Label {
-    -fx-font-size: 12px;
+.table-view {
+    -fx-background-color: white;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 5);
+}
+
+.table-header {
+    -fx-background-color: #4A4F55;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-text-fill: #ECF0F1;
 }
 
 .button {
-    -fx-background-color: #3A3F44;
+    -fx-background-color: #4A4F55;
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-font-weight: normal;
-    -fx-padding: 8px 18px;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
     -fx-border-color: #555;
     -fx-border-width: 1px;
     -fx-cursor: hand;
 }
 
 .button:hover {
+    -fx-background-color: #5A5F66;
+}
+
+#btnBackToDashboard {
+    -fx-background-color: #4A4F55;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #555;
+    -fx-border-width: 1px;
+    -fx-cursor: hand;
+}
+
+#btnBackToDashboard:hover {
+    -fx-background-color: #5A5F66;
+}
+
+.custom-combobox {
+    -fx-background-color: #4A4F55;
+    -fx-text-fill: white;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #666;
+    -fx-border-width: 1px;
+    -fx-padding: 6px;
+}
+
+.custom-combobox .list-cell {
+    -fx-text-fill: white;
     -fx-background-color: #4A4F55;
 }
 
-.button:pressed {
-    -fx-background-color: #2E3236;
+.custom-combobox .list-cell:hover {
+    -fx-background-color: #666;
 }
 
-#btnAddEvent, #btnEditEvent, #btnDeleteEvent, #btnAssignCoordinatorToMyEvent, #btnBackToDashboard {
-    -fx-background-color: #3A3F44;
+/* Dropdown Button */
+.combo-box .arrow-button {
+    -fx-background-color: #666;
+    -fx-border-radius: 6px;
 }
 
-#btnAddEvent:hover, #btnEditEvent:hover, #btnDeleteEvent:hover, #btnAssignCoordinatorToMyEvent:hover, #btnBackToDashboard:hover {
-    -fx-background-color: #3A3F44;
-}
-
-.table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+.combo-box .arrow-button:hover {
+    -fx-background-color: #777;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: transparent;
+    -fx-background-color: #4A4F55 !important;
 }
 
-TableColumn {
-    -fx-font-size: 14px;
-    -fx-font-weight: normal;
-    -fx-alignment: CENTER;
+.table-view .column-header {
+    -fx-background-color: #4A4F55 !important;
 }
 
-#colEventName, #colDate, #colStartTime, #colLocation, #colNotes {
-    -fx-background-color: transparent;
+.table-view .column-header .label {
     -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
-
-.table-row-cell {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.table-cell {
-    -fx-background-color: transparent;
-}
-
-.table-view .scroll-bar {
-    -fx-opacity: 0;
-}
-

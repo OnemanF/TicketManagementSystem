@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="451.0" prefWidth="600.0" stylesheets="/dk/easv/ticketmanagementsystem/UserManagement.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.UserManagementController">
+<AnchorPane prefHeight="500.0" prefWidth="700.0" stylesheets="@UserManagement.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.UserManagementController">
+
     <children>
-        <TableView fx:id="tblUsers" layoutX="12.0" layoutY="45.0" prefHeight="319.0" prefWidth="584.0">
+        <HBox layoutX="10.0" layoutY="10.0" spacing="15" alignment="CENTER_LEFT">
+            <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+                <image>
+                    <Image url="@/dk/easv/ticketmanagementsystem/Icons/images.png" />
+                </image>
+            </ImageView>
+            <Label text="User Management" styleClass="header-label-dark"/>
+        </HBox>
+        <TableView fx:id="tblUsers" layoutX="50.0" layoutY="80.0" prefHeight="250.0" prefWidth="600.0">
             <columns>
-                <TableColumn fx:id="colUsername" prefWidth="200.0" text="Username" />
-                <TableColumn fx:id="colRole" prefWidth="150.0" text="Role" />
-                <TableColumn fx:id="colAssignedEvents" prefWidth="243.19989013671875" text="Assigned Events" />
+                <TableColumn fx:id="colUsername" text="Username" prefWidth="200.0"/>
+                <TableColumn fx:id="colRole" text="Role" prefWidth="150.0"/>
+                <TableColumn fx:id="colAssignedEvents" text="Assigned Events" prefWidth="250.0"/>
             </columns>
         </TableView>
-        <Button fx:id="btnAddUser" layoutX="2.0" layoutY="374.0" onAction="#handleAddUser" text="Add User" />
-        <Button fx:id="btnEditUser" layoutX="92.0" layoutY="374.0" onAction="#handleEditUser" text="Edit User" />
-        <Button fx:id="btnDeleteUser" layoutX="181.0" layoutY="374.0" onAction="#handleDeleteUser" text="Delete User" />
-        <Button fx:id="btnAssignEventToCoordinator" layoutX="292.0" layoutY="417.0" onAction="#handleAssignEvent" text="Assign Event to Coordinator" />
-        <Label layoutX="155.0" text="User Management">
-            <font>
-                <Font size="40.0" />
-            </font>
-        </Label>
-      <Button fx:id="btnLogout" layoutX="506.0" layoutY="374.0" mnemonicParsing="false" onAction="#HandleLogout" text="Logout" />
-      <ComboBox fx:id="cmbEvents" layoutX="304.0" layoutY="374.0" prefHeight="34.0" prefWidth="175.0" promptText="Select Event" />
+        <HBox layoutX="50.0" layoutY="350.0" spacing="15">
+            <Button fx:id="btnAddUser" text="Add User" onAction="#handleAddUser"/>
+            <Button fx:id="btnEditUser" text="Edit User" onAction="#handleEditUser"/>
+            <Button fx:id="btnDeleteUser" text="Delete User" onAction="#handleDeleteUser"/>
+            <ComboBox fx:id="cmbEvents" promptText="Select Event" styleClass="custom-combobox"/>
+            <Button fx:id="btnAssignEventToCoordinator" text="Assign Event" onAction="#handleAssignEvent"/>
+        </HBox>
+        <Button fx:id="btnLogout" layoutX="550.0" layoutY="420.0" text="Logout" onAction="#HandleLogout"/>
     </children>
 </AnchorPane>

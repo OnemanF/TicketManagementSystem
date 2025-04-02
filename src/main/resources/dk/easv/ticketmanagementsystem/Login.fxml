@@ -4,14 +4,22 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="250.0" prefWidth="400.0" stylesheets="/dk/easv/ticketmanagementsystem/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.LoginController">
+<AnchorPane prefHeight="350.0" prefWidth="400.0" stylesheets="/dk/easv/ticketmanagementsystem/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.ticketmanagementsystem.Gui.Controller.LoginController">
     <children>
-        <Label layoutX="22.0" layoutY="34.0" text="Username:" />
-        <TextField fx:id="txtUsername" layoutX="150.0" layoutY="30.0" prefWidth="200.0" />
-        <Label layoutX="23.0" layoutY="84.0" text="Password:" />
-        <PasswordField fx:id="txtPassword" layoutX="150.0" layoutY="80.0" prefWidth="200.0" />
-        <Button fx:id="btnLogin" layoutX="150.0" layoutY="130.0" onAction="#handleLogin" text="Login" />
+        <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="170.0" layoutY="10.0" preserveRatio="true">
+            <image>
+                <Image url="@/dk/easv/ticketmanagementsystem/Icons/images.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="135.0" layoutY="70.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #ECF0F1;" text="User Login" />
+        <Label layoutX="22.0" layoutY="120.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ECF0F1;" text="Username:" />
+        <TextField fx:id="txtUsername" layoutX="150.0" layoutY="120.0" prefWidth="200.0" styleClass="text-field" />
+        <Label layoutX="22.0" layoutY="170.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ECF0F1;" text="Password:" />
+        <PasswordField fx:id="txtPassword" layoutX="150.0" layoutY="170.0" prefWidth="200.0" styleClass="password-field" />
+        <Button fx:id="btnLogin" layoutX="150.0" layoutY="220.0" onAction="#handleLogin" styleClass="button" text="Login" />
     </children>
 </AnchorPane>
