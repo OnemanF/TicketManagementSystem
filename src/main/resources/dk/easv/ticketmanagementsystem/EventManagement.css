@@ -98,3 +98,9 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
+
+.table-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+}

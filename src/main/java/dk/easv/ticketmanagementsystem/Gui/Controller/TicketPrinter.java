@@ -59,7 +59,7 @@ public class TicketPrinter {
 
         document.add(new Paragraph("Event Ticket").setBold().setFontSize(18).setTextAlignment(TextAlignment.CENTER));
 
-        document.add(new Paragraph("Customer Name: " + ticket.getCustomerName()));
+        document.add(new Paragraph("Name: " + ticket.getCustomerName()));
         document.add(new Paragraph("Email: " + ticket.getCustomerEmail()));
         document.add(new Paragraph("Ticket Type: " + ticket.getTicketType()));
         document.add(new Paragraph("Event: " + ticket.getEvent().getName()));
