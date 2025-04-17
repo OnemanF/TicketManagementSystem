@@ -34,6 +34,8 @@ build/
 ### VS Code ###
 .vscode/
 
+/config
+
 ### Mac OS ###
 .DS_Store
-/config/config.settings
+
